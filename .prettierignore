@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-cli/
+coverage/
+playwright-report/
+test-results/
+.superpowers/
+examples/
+package-lock.json
+.DS_Store

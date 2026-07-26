@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#020201" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <meta
+      name="description"
+      content="Convert images into detailed, GitHub README-safe ASCII art directly in your browser."
+    />
+    <title>README ASCII Studio</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace">Skip to controls</a>
+    <div class="page-shell">
+      <header class="masthead">
+        <p class="eyebrow">LOCAL / PRIVATE / GITHUB-FRIENDLY</p>
+        <h1>README ASCII STUDIO</h1>
+        <p>Image to ASCII, Markdown, and SVG. Everything is processed in this browser tab.</p>
+      </header>
+
+      <main id="workspace" class="workspace">
+        <section class="panel controls-panel" aria-labelledby="input-title">
+          <header class="panel-heading">
+            <span class="panel-index">01</span>
+            <div>
+              <p class="terminal-label">INPUT / TUNING</p>
+              <h2 id="input-title">Conversion Controls</h2>
+            </div>
+          </header>
+
+          <section class="control-group" aria-labelledby="source-group-title">
+            <h3 id="source-group-title">SOURCE</h3>
+            <label id="dropZone" class="drop-zone" for="fileInput">
+              <input
+                id="fileInput"
+                class="file-input-overlay"
+                name="sourceImage"
+                type="file"
+                accept="image/*"
+                aria-label="Choose source image"
+              />
+              <img id="sourcePreview" width="960" height="600" alt="Selected source preview" />
+              <span class="drop-overlay">
+                <strong><span aria-hidden="true">$</span> image input</strong>
+                <small>drop / paste / browse · PNG, JPEG, WebP, GIF · max 32 MiB / 40 MP</small>
+              </span>
+            </label>
+            <p id="sourceMeta" class="meta-line"></p>
+
+            <div class="preset-rack">
+              <div class="field">
+                <span id="presetLabel">BUILT-IN PRESETS</span>
+                <div
+                  class="dropdown"
+                  data-dropdown="preset"
+                  data-dropdown-meta="PRESET"
+                  data-dropdown-trigger-description="false"
+                >
+                  <input id="preset" name="builtInPreset" type="hidden" value="readme" />
+                  <button
+                    id="presetTrigger"
+                    class="dropdown-trigger"
+                    type="button"
+                    role="combobox"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="presetListbox"
+                    aria-labelledby="presetLabel presetValue"
+                    aria-describedby="presetDescription"
+                  >
+                    <span class="dropdown-rail" aria-hidden="true"></span>
+                    <span class="dropdown-value">
+                      <strong id="presetValue"></strong>
+                      <small id="presetValueDescription"></small>
+                    </span>
+                    <span id="presetValuePreview" class="dropdown-value-preview" hidden></span>
+                    <span class="dropdown-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div id="presetPopover" class="dropdown-popover" hidden>
+                    <div id="presetMeta" class="dropdown-meta" aria-hidden="true"></div>
+                    <div
+                      id="presetListbox"
+                      class="dropdown-listbox"
+                      role="listbox"
+                      aria-labelledby="presetLabel"
+                    ></div>
+                  </div>
+                </div>
+                <small id="presetDescription"></small>
+              </div>
+
+              <div class="saved-preset-heading">
+                <span>SAVED PRESETS</span>
+                <span class="preset-summary">
+                  <span id="customPresetState" class="preset-state" aria-live="polite"
+                    >No preset selected</span
+                  >
+                  <span id="customPresetCount" class="count">0</span>
+                </span>
+              </div>
+              <div
+                id="customPresetList"
+                class="custom-preset-list"
+                role="list"
+                aria-label="Saved presets"
+              ></div>
+
+              <form id="customPresetForm" class="save-preset-form">
+                <label class="field">
+                  <span>PRESET NAME</span>
+                  <input
+                    id="customPresetName"
+                    name="presetName"
+                    type="text"
+                    maxlength="80"
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-describedby="presetNotice"
+                    placeholder="e.g. Dark logo…"
+                  />
+                </label>
+                <div class="preset-save-actions">
+                  <button class="button primary" type="submit">Save as New</button>
+                  <button id="updateCustomPreset" class="button" type="button" disabled>
+                    Update Preset
+                  </button>
+                </div>
+              </form>
+
+              <div class="preset-file-actions">
+                <button id="exportCustomPreset" class="button" type="button" disabled>
+                  Export Selected
+                </button>
+                <button id="importCustomPresetButton" class="button" type="button">
+                  Import JSON
+                </button>
+                <input
+                  id="importCustomPreset"
+                  name="presetFile"
+                  type="file"
+                  accept="application/json,.json"
+                  hidden
+                  aria-describedby="presetNotice"
+                />
+              </div>
+              <div class="preset-notice-row">
+                <p
+                  id="presetNotice"
+                  class="preset-notice"
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                ></p>
+                <button id="undoDeletePreset" class="row-action" type="button" hidden>
+                  Undo Delete
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="control-group" aria-labelledby="geometry-group-title">
+            <h3 id="geometry-group-title">GEOMETRY</h3>
+            <div class="control-grid">
+              <label class="field" for="width">
+                <span id="widthLabel"
+                  >Width <output id="widthValue" aria-hidden="true">88</output></span
+                >
+                <input
+                  id="width"
+                  name="outputWidth"
+                  type="range"
+                  aria-labelledby="widthLabel"
+                  aria-valuetext="88"
+                  min="24"
+                  max="180"
+                  step="1"
+                  value="88"
+                />
+              </label>
+
+              <label class="field" for="aspect">
+                <span id="aspectLabel"
+                  >Character aspect <output id="aspectValue" aria-hidden="true">0.50</output></span
+                >
+                <input
+                  id="aspect"
+                  name="characterAspect"
+                  type="range"
+                  aria-labelledby="aspectLabel"
+                  aria-valuetext="0.50"
+                  min="0.32"
+                  max="0.78"
+                  step="0.01"
+                  value="0.50"
+                />
+              </label>
+            </div>
+          </section>
+
+          <section class="control-group" aria-labelledby="tone-group-title">
+            <h3 id="tone-group-title">TONE</h3>
+            <div class="control-grid">
+              <div class="field field-wide">
+                <span id="characterStyleLabel">Character style</span>
+                <div
+                  class="dropdown"
+                  data-dropdown="characterStyle"
+                  data-dropdown-meta="CHARACTER STYLE"
+                >
+                  <input id="characterStyle" name="characterStyle" type="hidden" value="readme" />
+                  <button
+                    id="characterStyleTrigger"
+                    class="dropdown-trigger"
+                    type="button"
+                    role="combobox"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="characterStyleListbox"
+                    aria-labelledby="characterStyleLabel characterStyleValue"
+                  >
+                    <span class="dropdown-rail" aria-hidden="true"></span>
+                    <span class="dropdown-value">
+                      <strong id="characterStyleValue"></strong>
+                      <small id="characterStyleValueDescription"></small>
+                    </span>
+                    <span
+                      id="characterStyleValuePreview"
+                      class="dropdown-value-preview"
+                      hidden
+                    ></span>
+                    <span class="dropdown-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div id="characterStylePopover" class="dropdown-popover" hidden>
+                    <div id="characterStyleMeta" class="dropdown-meta" aria-hidden="true"></div>
+                    <div
+                      id="characterStyleListbox"
+                      class="dropdown-listbox"
+                      role="listbox"
+                      aria-labelledby="characterStyleLabel"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <label class="field">
+                <span>Background</span>
+                <input id="background" name="backgroundColor" type="color" value="#ffffff" />
+              </label>
+
+              <label class="field" for="contrast">
+                <span id="contrastLabel"
+                  >Contrast <output id="contrastValue" aria-hidden="true">1.08</output></span
+                >
+                <input
+                  id="contrast"
+                  name="contrast"
+                  type="range"
+                  aria-labelledby="contrastLabel"
+                  aria-valuetext="1.08"
+                  min="0.50"
+                  max="2.00"
+                  step="0.01"
+                  value="1.08"
+                />
+              </label>
+
+              <label class="field" for="gamma">
+                <span id="gammaLabel"
+                  >Gamma <output id="gammaValue" aria-hidden="true">1.00</output></span
+                >
+                <input
+                  id="gamma"
+                  name="gamma"
+                  type="range"
+                  aria-labelledby="gammaLabel"
+                  aria-valuetext="1.00"
+                  min="0.45"
+                  max="2.20"
+                  step="0.01"
+                  value="1.00"
+                />
+              </label>
+
+              <label class="field" for="detail">
+                <span id="detailLabel"
+                  >Local detail <output id="detailValue" aria-hidden="true">0.55</output></span
+                >
+                <input
+                  id="detail"
+                  name="detail"
+                  type="range"
+                  aria-labelledby="detailLabel"
+                  aria-valuetext="0.55"
+                  min="0"
+                  max="2"
+                  step="0.05"
+                  value="0.55"
+                />
+              </label>
+
+              <label class="field" for="brightness">
+                <span id="brightnessLabel"
+                  >Brightness <output id="brightnessValue" aria-hidden="true">0.00</output></span
+                >
+                <input
+                  id="brightness"
+                  name="brightness"
+                  type="range"
+                  aria-labelledby="brightnessLabel"
+                  aria-valuetext="0.00"
+                  min="-0.45"
+                  max="0.45"
+                  step="0.01"
+                  value="0"
+                />
+              </label>
+
+              <label class="switch-field"
+                ><input id="autoLevels" name="autoLevels" type="checkbox" checked /> Auto
+                levels</label
+              >
+              <label class="switch-field"
+                ><input id="invert" name="invert" type="checkbox" /> Invert</label
+              >
+            </div>
+          </section>
+
+          <section class="control-group" aria-labelledby="structure-group-title">
+            <h3 id="structure-group-title">STRUCTURE</h3>
+            <div class="control-grid">
+              <div class="field field-wide">
+                <span id="ditherLabel">Dithering</span>
+                <div class="dropdown" data-dropdown="dither" data-dropdown-meta="DITHERING">
+                  <input id="dither" name="dither" type="hidden" value="atkinson" />
+                  <button
+                    id="ditherTrigger"
+                    class="dropdown-trigger"
+                    type="button"
+                    role="combobox"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="ditherListbox"
+                    aria-labelledby="ditherLabel ditherValue"
+                  >
+                    <span class="dropdown-rail" aria-hidden="true"></span>
+                    <span class="dropdown-value">
+                      <strong id="ditherValue"></strong>
+                      <small id="ditherValueDescription"></small>
+                    </span>
+                    <span id="ditherValuePreview" class="dropdown-value-preview" hidden></span>
+                    <span class="dropdown-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div id="ditherPopover" class="dropdown-popover" hidden>
+                    <div id="ditherMeta" class="dropdown-meta" aria-hidden="true"></div>
+                    <div
+                      id="ditherListbox"
+                      class="dropdown-listbox"
+                      role="listbox"
+                      aria-labelledby="ditherLabel"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <label class="switch-field"
+                ><input id="edgeGlyphs" name="edgeGlyphs" type="checkbox" /> ASCII edge
+                overlay</label
+              >
+              <label class="switch-field"
+                ><input id="collapsible" name="collapsible" type="checkbox" /> Markdown details
+                block</label
+              >
+            </div>
+          </section>
+        </section>
+
+        <section class="panel output-panel" aria-labelledby="output-title">
+          <header class="panel-heading output-heading">
+            <span class="panel-index">02</span>
+            <div>
+              <p class="terminal-label">OUTPUT / EXPORT</p>
+              <h2 id="output-title">Generated Result</h2>
+            </div>
+          </header>
+
+          <div class="output-command-bar">
+            <div class="tabs" role="group" aria-label="Output format">
+              <button class="tab" type="button" data-output="text" aria-pressed="false">
+                ASCII
+              </button>
+              <button class="tab active" type="button" data-output="markdown" aria-pressed="true">
+                Markdown
+              </button>
+              <button class="tab" type="button" data-output="svg" aria-pressed="false">SVG</button>
+            </div>
+            <p id="resultMeta" class="result-meta">Preparing preview…</p>
+            <span
+              id="status"
+              class="status-pill"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              >Local processing</span
+            >
+            <div class="actions">
+              <button id="copyButton" class="button primary" type="button">Copy Markdown</button>
+              <button id="downloadButton" class="button" type="button">Download .md</button>
+            </div>
+          </div>
+
+          <div class="preview-frame">
+            <div class="terminal-prompt" aria-hidden="true">$ preview --live</div>
+            <pre id="asciiPreview" aria-label="ASCII art preview"></pre>
+          </div>
+
+          <label class="output-code-label" for="output">SELECTED OUTPUT</label>
+          <textarea
+            id="output"
+            readonly
+            spellcheck="false"
+            aria-label="Generated output"
+            aria-describedby="formatHint"
+          ></textarea>
+          <p id="formatHint" class="format-hint"></p>
+        </section>
+      </main>
+
+      <footer>Browser-only image processing. No analytics, uploads, or remote image API.</footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
