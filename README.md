@@ -4,7 +4,7 @@ A local-first image-to-ASCII generator built specifically for GitHub README file
 
 It provides a polished browser interface and a scriptable CLI, both powered by the same strict TypeScript conversion core. The primary output is plain, copy-ready ASCII with no ANSI escape sequences. For stable typography and colors across GitHub themes, it can also export an accessible SVG.
 
-The source checkout contains reproducible preview assets under `examples/`, including the legacy demo and golden outputs for Fine Blocks, Braille, and Structural Unicode. Release verification regenerates every text, Markdown, and SVG result from source-controlled fixtures. These assets document the browser project but are intentionally excluded from the CLI-only npm package.
+The source checkout contains project-owned/generated preview assets under `examples/`, including the legacy demo and golden outputs for Fine Blocks, Braille, and Structural Unicode. Their provenance and attribution are recorded in [`NOTICE.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/NOTICE.md). Release verification regenerates every text, Markdown, and SVG result from source-controlled fixtures. These assets document the browser project but are intentionally excluded from the CLI-only npm package.
 
 ## Why this project exists
 
@@ -395,6 +395,15 @@ The source checkout also contains a longer Turkish review at `docs/reference-ana
 - Output height is limited to 400 rows. For an extreme portrait image, crop the source or pass a smaller explicit CLI `--height` value.
 - Browser-local preset storage is limited to 100 entries; imported preset JSON must be 1 MiB or smaller.
 - Unicode block, Braille, and structural glyph widths and shapes depend on the selected monospace font and rendering platform. Strict ASCII is the safest choice for cross-platform README fidelity.
+
+## Open-source project
+
+- Read [`CONTRIBUTING.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/CONTRIBUTING.md) before opening a pull request.
+- Report security issues through the process in [`SECURITY.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/SECURITY.md); do not disclose suspected vulnerabilities in public issues.
+- Participation expectations are documented in [`CODE_OF_CONDUCT.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/CODE_OF_CONDUCT.md).
+- Release history is recorded in [`CHANGELOG.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/CHANGELOG.md).
+
+The npm package is intentionally CLI-only; the browser studio and repository documentation remain available from the source repository.
 
 ## License
 

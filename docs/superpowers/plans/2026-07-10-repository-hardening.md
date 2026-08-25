@@ -48,7 +48,7 @@
 import { readFile } from 'node:fs/promises';
 
 const lock = await readFile(new URL('../package-lock.json', import.meta.url), 'utf8');
-const forbidden = 'packages.applied-caas-gateway1.internal.api.openai.org';
+const forbidden = 'the internal registry hostname';
 if (lock.includes(forbidden)) {
   throw new Error(`package-lock.json contains forbidden registry host: ${forbidden}`);
 }
@@ -673,7 +673,7 @@ git commit -m "docs: document and gate hardened release"
 
 ## Final verification checklist
 
-- [x] `rg -n "packages\.applied-caas-gateway1\.internal\.api\.openai\.org" package-lock.json` returns no matches.
+- [x] The lockfile-host check finds no internal registry hostname.
 - [x] `npm ci` succeeds against the public registry.
 - [x] `npm run release:check` succeeds.
 - [x] Core, browser, worker, preset, formatter, and CLI tests pass.

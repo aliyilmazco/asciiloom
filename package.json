@@ -4,6 +4,15 @@
   "description": "README-focused image-to-ASCII CLI with text, Markdown, and accessible SVG output.",
   "type": "module",
   "license": "MIT",
+  "author": "README ASCII Studio contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aliyilmazco/ascii-art-for-md.git"
+  },
+  "homepage": "https://aliyilmazco.github.io/ascii-art-for-md/",
+  "bugs": {
+    "url": "https://github.com/aliyilmazco/ascii-art-for-md/issues"
+  },
   "keywords": [
     "ascii-art",
     "image-to-ascii",
