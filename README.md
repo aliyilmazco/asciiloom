@@ -390,6 +390,7 @@ The source checkout also contains a longer Turkish review at `docs/reference-ana
 - Exact code-block colors depend on the viewer's GitHub theme. Export SVG for fixed colors.
 - ASCII cannot preserve full color or every photographic detail; composition, contrast, and a suitable crop still matter.
 - The browser accepts formats its image decoder supports. The CLI's supported formats come from the installed Sharp build.
+- Gamma correction accepts `0.1–10`; the browser controls intentionally expose the narrower `0.45–2.2` range for practical tuning.
 - Browser source files are limited to 32 MiB and 40 megapixels. Known PNG, JPEG, WebP, and GIF dimensions are checked before browser decode, the decoded dimensions are checked again as a fallback, and accepted large images are downsampled to a bounded working bitmap before repeated renders.
 - Animated browser images are sampled once when accepted, so repeated renders with unchanged settings stay deterministic.
 - Output height is limited to 400 rows. For an extreme portrait image, crop the source or pass a smaller explicit CLI `--height` value.

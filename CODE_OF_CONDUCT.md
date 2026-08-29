@@ -17,4 +17,4 @@ Harassment, discrimination, threats, personal attacks, doxxing, unwanted sexuali
 
 ## Enforcement
 
-For conduct concerns, contact the repository maintainers privately through GitHub rather than opening a public issue. Security concerns should follow [`SECURITY.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/SECURITY.md). Maintainers may remove comments, restrict participation, or close contributions when necessary to keep the project safe and constructive.
+For conduct concerns, use a private contact method published on the [`aliyilmazco` GitHub profile](https://github.com/aliyilmazco) rather than opening a public issue. Security concerns should follow [`SECURITY.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/SECURITY.md). Maintainers may remove comments, restrict participation, or close contributions when necessary to keep the project safe and constructive.

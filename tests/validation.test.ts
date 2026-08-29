@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_OPTIONS } from '../src/core/presets.js';
 import {
+  MAX_GAMMA,
   MAX_OUTPUT_HEIGHT,
   MAX_OUTPUT_WIDTH,
   MAX_RAMP_LENGTH,
+  MIN_GAMMA,
   resolveOutputDimensions,
   validateAsciiOptions,
 } from '../src/core/validation.js';
@@ -117,6 +119,21 @@ describe('validateAsciiOptions', () => {
     );
   });
 
+  it('bounds gamma to the shared inclusive rendering range', () => {
+    expect(MIN_GAMMA).toBe(0.1);
+    expect(MAX_GAMMA).toBe(10);
+
+    for (const gamma of [MIN_GAMMA, MAX_GAMMA]) {
+      expect(() => validateAsciiOptions(options({ gamma }))).not.toThrow();
+    }
+
+    for (const gamma of [Number.MIN_VALUE, MIN_GAMMA - 0.01, MAX_GAMMA + 0.01]) {
+      expect(() => validateAsciiOptions(options({ gamma }))).toThrow(
+        'gamma must be between 0.1 and 10.',
+      );
+    }
+  });
+
   it('retains the established numeric and ramp constraints', () => {
     expect(() => validateAsciiOptions(options({ width: 1 }))).toThrow(
       'width must be an integer between 2 and 400.',
@@ -125,7 +142,7 @@ describe('validateAsciiOptions', () => {
       'brightness must be a finite number.',
     );
     expect(() => validateAsciiOptions(options({ gamma: 0 }))).toThrow(
-      'gamma must be greater than 0.',
+      'gamma must be between 0.1 and 10.',
     );
     expect(() => validateAsciiOptions(options({ detail: -0.1 }))).toThrow(
       'detail must not be negative.',

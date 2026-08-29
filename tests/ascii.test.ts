@@ -170,6 +170,20 @@ describe('convertRgbaToAscii', () => {
     expect(convertRgbaToAscii(image, options(), 1).art).toBe('@ ');
   });
 
+  it('rejects underflowing gamma and preserves white at the supported minimum', () => {
+    const white: RgbaImage = {
+      width: 2,
+      height: 1,
+      channels: 4,
+      data: new Uint8Array([255, 255, 255, 255, 255, 255, 255, 255]),
+    };
+
+    expect(() => convertRgbaToAscii(white, options({ gamma: Number.MIN_VALUE }), 1)).toThrow(
+      'gamma must be between 0.1 and 10.',
+    );
+    expect(convertRgbaToAscii(white, options({ gamma: 0.1 }), 1).art).toBe('  ');
+  });
+
   it('composites transparent pixels against the configured background', () => {
     const image: RgbaImage = {
       width: 2,

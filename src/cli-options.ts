@@ -6,7 +6,7 @@ import {
 } from './core/character-styles.js';
 import { PRESETS, RAMPS, optionsForPreset } from './core/presets.js';
 import type { AsciiOptions, DitherMode, RgbColor } from './core/types.js';
-import { validateAsciiOptions } from './core/validation.js';
+import { MAX_GAMMA, MIN_GAMMA, validateAsciiOptions } from './core/validation.js';
 
 export type CliFormat = 'text' | 'markdown' | 'svg' | 'all';
 
@@ -216,10 +216,11 @@ export function parseCliCommand(args: string[]): CliCommand | HelpCommand {
       -1,
       1,
     ),
-    gamma: positive(
+    gamma: inRange(
       'gamma',
       numeric('gamma', parsed.values.gamma, baseOptions.gamma),
-      Number.POSITIVE_INFINITY,
+      MIN_GAMMA,
+      MAX_GAMMA,
     ),
     detail: atLeast('detail', numeric('detail', parsed.values.detail, baseOptions.detail), 0),
     background: parseHexColor(parsed.values.background, baseOptions.background),

@@ -67,6 +67,9 @@ describe('runCli orchestration', () => {
     await runCli(['--help'], runtime);
 
     expect(runtime.stdout).toHaveBeenCalledWith(expect.stringContaining('README ASCII Studio CLI'));
+    expect(runtime.stdout).toHaveBeenCalledWith(
+      expect.stringContaining('--gamma <number>      Gamma correction (0.1-10)'),
+    );
     expect(runtime.metadata).not.toHaveBeenCalled();
     expect(runtime.loadImage).not.toHaveBeenCalled();
     expect(runtime.preflight).not.toHaveBeenCalled();

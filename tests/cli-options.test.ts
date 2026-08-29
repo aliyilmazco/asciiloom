@@ -99,6 +99,23 @@ describe('parseCliCommand', () => {
     );
   });
 
+  it('uses the shared inclusive gamma range', () => {
+    expect(parseCliCommand(['photo.png', '--gamma', '0.1'])).toMatchObject({
+      help: false,
+      options: { gamma: 0.1 },
+    });
+    expect(parseCliCommand(['photo.png', '--gamma', '10'])).toMatchObject({
+      help: false,
+      options: { gamma: 10 },
+    });
+
+    for (const gamma of ['5e-324', '0.09', '10.01']) {
+      expect(() => parseCliCommand(['photo.png', '--gamma', gamma])).toThrow(
+        'gamma must be between 0.1 and 10.',
+      );
+    }
+  });
+
   it('accepts negative numeric values in the documented space-separated form', () => {
     const command = parseCliCommand(['photo.png', '--brightness', '-0.2']);
     expect(command).toMatchObject({ help: false, options: { brightness: -0.2 } });

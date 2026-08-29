@@ -157,6 +157,25 @@ describe('terminal workspace contract', () => {
     expect(css).toMatch(/\.meta-line \{[^}]*overflow-wrap: anywhere;/u);
   });
 
+  it('keeps the privacy promise and exposes project navigation', async () => {
+    const html = await page();
+    const css = await styleSource();
+
+    expect(html).toContain(
+      '<p>Browser-only image processing. No analytics, uploads, or remote image API.</p>',
+    );
+    expect(html).toContain('<nav class="footer-links" aria-label="Project links">');
+    expect(html).toContain('href="https://github.com/aliyilmazco/ascii-art-for-md">Source</a>');
+    expect(html).toContain(
+      'href="https://github.com/aliyilmazco/ascii-art-for-md#readme">Documentation</a>',
+    );
+    expect(html).toMatch(
+      /href="https:\/\/github\.com\/aliyilmazco\/ascii-art-for-md\/blob\/main\/LICENSE"\s*>\s*MIT License<\/a\s*>/u,
+    );
+    expect(css).toMatch(/\.footer-links a\s*\{[^}]*text-decoration:\s*underline;/su);
+    expect(css).toMatch(/\.footer-links a:focus-visible\s*\{[^}]*outline:/su);
+  });
+
   it('gives interactive conversion controls stable form names', async () => {
     const html = await page();
 

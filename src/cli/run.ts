@@ -23,7 +23,7 @@ Options:
       --dither <mode>       none | atkinson | floyd-steinberg | bayer
       --contrast <number>   Contrast multiplier
       --brightness <number> Brightness offset (-1 to 1)
-      --gamma <number>      Gamma correction (>0)
+      --gamma <number>      Gamma correction (0.1-10)
       --detail <number>     Local detail enhancement (0-2 recommended)
       --background <hex>    Alpha-compositing background, e.g. #ffffff
       --invert              Invert luminance before character mapping

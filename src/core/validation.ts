@@ -3,6 +3,8 @@ import type { AsciiOptions, DitherMode, EdgeStyle, RenderMode, RgbColor } from '
 export const MAX_OUTPUT_WIDTH = 400;
 export const MAX_OUTPUT_HEIGHT = 400;
 export const MAX_RAMP_LENGTH = 65_536;
+export const MIN_GAMMA = 0.1;
+export const MAX_GAMMA = 10;
 export const DITHER_MODES = [
   'none',
   'floyd-steinberg',
@@ -117,8 +119,8 @@ export function validateAsciiOptions(options: AsciiOptions): void {
   assertOutputWidth('width', options.width);
   assertCellAspectRatio(options.cellAspectRatio);
 
-  if (options.gamma <= 0) {
-    throw new RangeError('gamma must be greater than 0.');
+  if (options.gamma < MIN_GAMMA || options.gamma > MAX_GAMMA) {
+    throw new RangeError(`gamma must be between ${MIN_GAMMA} and ${MAX_GAMMA}.`);
   }
   if (options.contrast < 0) {
     throw new RangeError('contrast must not be negative.');
