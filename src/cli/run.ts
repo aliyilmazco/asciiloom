@@ -7,10 +7,10 @@ import type { RgbaImage } from '../core/types.js';
 import { resolveOutputDimensions } from '../core/validation.js';
 
 export const CLI_HELP = `
-README ASCII Studio CLI
+Charosaic CLI
 
 Usage:
-  readme-ascii <image> [options]
+  charosaic <image> [options]
   npm run cli -- <image> [options]
 
 Options:
@@ -40,11 +40,11 @@ Options:
   -h, --help                Show this help
 
 Examples:
-  readme-ascii portrait.jpg --preset portrait --output portrait.md
-  readme-ascii logo.png --preset logo --format all --output docs/logo-ascii
-  readme-ascii diagram.png --style structure --format svg -o diagram.svg
-  readme-ascii photo.png --style braille --format text -o photo.txt
-  readme-ascii photo.webp --width 104 --dither atkinson --format svg -o art.svg
+  charosaic portrait.jpg --preset portrait --output portrait.md
+  charosaic logo.png --preset logo --format all --output docs/logo-ascii
+  charosaic diagram.png --style structure --format svg -o diagram.svg
+  charosaic photo.png --style braille --format text -o photo.txt
+  charosaic photo.webp --width 104 --dither atkinson --format svg -o art.svg
 `;
 
 export interface ImageMetadata {

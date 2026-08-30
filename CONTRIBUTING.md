@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve README ASCII Studio. The project keeps the browser studio, CLI, and conversion core in one TypeScript repository, so focused changes and reproducible checks are especially valuable.
+Thank you for helping improve Charosaic. The project keeps the browser studio, CLI, and conversion core in one TypeScript repository, so focused changes and reproducible checks are especially valuable.
 
 ## Development setup
 

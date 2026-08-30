@@ -48,7 +48,7 @@ function runCli(args: readonly string[], cwd = repositoryRoot): CliResult {
 }
 
 async function temporaryDirectory(): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), 'readme-ascii-cli-'));
+  const directory = await mkdtemp(join(tmpdir(), 'charosaic-cli-'));
   temporaryDirectories.push(directory);
   return directory;
 }
@@ -72,8 +72,8 @@ describe('compiled CLI', () => {
     const result = runCli(['--help']);
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('README ASCII Studio CLI');
-    expect(result.stdout).toContain('readme-ascii <image> [options]');
+    expect(result.stdout).toContain('Charosaic CLI');
+    expect(result.stdout).toContain('charosaic <image> [options]');
     expect(result.stdout).toContain('--style <name>');
     for (const style of [
       'readme',

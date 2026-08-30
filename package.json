@@ -1,17 +1,17 @@
 {
-  "name": "readme-ascii-studio",
+  "name": "charosaic",
   "version": "1.0.0",
   "description": "README-focused image-to-ASCII CLI with text, Markdown, and accessible SVG output.",
   "type": "module",
   "license": "MIT",
-  "author": "README ASCII Studio contributors",
+  "author": "Charosaic contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aliyilmazco/ascii-art-for-md.git"
+    "url": "https://github.com/aliyilmazco/charosaic.git"
   },
-  "homepage": "https://aliyilmazco.github.io/ascii-art-for-md/",
+  "homepage": "https://aliyilmazco.github.io/charosaic/",
   "bugs": {
-    "url": "https://github.com/aliyilmazco/ascii-art-for-md/issues"
+    "url": "https://github.com/aliyilmazco/charosaic/issues"
   },
   "keywords": [
     "ascii-art",
@@ -22,7 +22,7 @@
     "cli"
   ],
   "bin": {
-    "readme-ascii": "dist-cli/cli.js"
+    "charosaic": "dist-cli/cli.js"
   },
   "files": [
     "dist-cli/**/*.js"

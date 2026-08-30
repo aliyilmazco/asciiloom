@@ -65,7 +65,7 @@ export async function writeFileAtomically(path: string, contents: string): Promi
   const directory = dirname(resolvedPath);
   await mkdir(directory, { recursive: true });
 
-  const temporaryPath = join(directory, `.readme-ascii-${process.pid}-${randomUUID()}.tmp`);
+  const temporaryPath = join(directory, `.charosaic-${process.pid}-${randomUUID()}.tmp`);
   const mode = await existingMode(resolvedPath);
   try {
     await writeFile(temporaryPath, contents, { encoding: 'utf8', flag: 'wx' });

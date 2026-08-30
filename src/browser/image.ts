@@ -374,7 +374,7 @@ export function createDemoImage(): LoadedImage {
     source: canvas,
     width: canvas.width,
     height: canvas.height,
-    name: 'readme-ascii-demo',
+    name: 'charosaic-demo',
     previewUrl,
     dispose: () => undefined,
   };

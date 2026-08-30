@@ -1,10 +1,10 @@
-# README ASCII Studio
+# Charosaic
 
 A local-first image-to-ASCII generator built specifically for GitHub README files.
 
 It provides a polished browser interface and a scriptable CLI, both powered by the same strict TypeScript conversion core. The primary output is plain, copy-ready ASCII with no ANSI escape sequences. For stable typography and colors across GitHub themes, it can also export an accessible SVG.
 
-The source checkout contains project-owned/generated preview assets under `examples/`, including the legacy demo and golden outputs for Fine Blocks, Braille, and Structural Unicode. Their provenance and attribution are recorded in [`NOTICE.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/NOTICE.md). Release verification regenerates every text, Markdown, and SVG result from source-controlled fixtures. These assets document the browser project but are intentionally excluded from the CLI-only npm package.
+The source checkout contains project-owned/generated preview assets under `examples/`, including the legacy demo and golden outputs for Fine Blocks, Braille, and Structural Unicode. Their provenance and attribution are recorded in [`NOTICE.md`](https://github.com/aliyilmazco/charosaic/blob/main/NOTICE.md). Release verification regenerates every text, Markdown, and SVG result from source-controlled fixtures. These assets document the browser project but are intentionally excluded from the CLI-only npm package.
 
 ## Why this project exists
 
@@ -16,7 +16,7 @@ Most terminal-oriented ASCII packages optimize for ANSI colors, terminal geometr
 - Photos need perceptual luminance, local detail recovery, contrast normalization, and controlled dithering to survive heavy downsampling.
 - Plain Markdown follows the viewer's GitHub theme; an SVG option is useful when exact foreground/background rendering matters.
 
-README ASCII Studio handles those concerns directly rather than adapting a terminal renderer after the fact.
+Charosaic handles those concerns directly rather than adapting a terminal renderer after the fact.
 
 ## Highlights
 
@@ -57,20 +57,20 @@ The static site is written to `dist/`.
 
 ## Quick start: CLI
 
-The public npm package is named `readme-ascii-studio`, while the installed executable is named `readme-ascii`. The npm package distributes only the CLI; the browser studio remains available from this source repository and is not included in the package's runtime contents.
+The public npm package and installed executable are both named `charosaic`. The npm package distributes only the CLI; the browser studio remains available from this source repository and is not included in the package's runtime contents.
 
 Install the CLI globally:
 
 ```bash
-npm install --global readme-ascii-studio
-readme-ascii ./photo.jpg --preset readme --output ./ascii-photo.md
+npm install --global charosaic
+charosaic ./photo.jpg --preset readme --output ./ascii-photo.md
 ```
 
 Run it without a permanent global installation:
 
 ```bash
-npm exec --yes --package readme-ascii-studio -- \
-  readme-ascii ./photo.jpg --preset readme --output ./ascii-photo.md
+npm exec --yes --package charosaic -- \
+  charosaic ./photo.jpg --preset readme --output ./ascii-photo.md
 ```
 
 For development, run directly from a source checkout:
@@ -89,7 +89,7 @@ node ./dist-cli/cli.js ./photo.jpg --preset portrait --output ./ascii-photo.md
 Generate text, Markdown, and SVG together:
 
 ```bash
-readme-ascii ./logo.png \
+charosaic ./logo.png \
   --preset logo \
   --format all \
   --output ./docs/logo-ascii
@@ -106,7 +106,7 @@ docs/logo-ascii.svg
 Print every CLI option with:
 
 ```bash
-readme-ascii --help
+charosaic --help
 ```
 
 Use `--format text`, `--format markdown`, or `--format svg` for one output type, or `--format all` to generate all three.
@@ -116,9 +116,9 @@ Use `--format text`, `--format markdown`, or `--format svg` for one output type,
 Character-style overlays can be combined with any preset:
 
 ```bash
-readme-ascii photo.jpg --preset portrait --style blocks-fine --output photo.md
-readme-ascii photo.jpg --preset portrait --style braille --output photo.md
-readme-ascii logo.png --preset logo --style structure --format all --output docs/logo
+charosaic photo.jpg --preset portrait --style blocks-fine --output photo.md
+charosaic photo.jpg --preset portrait --style braille --output photo.md
+charosaic logo.png --preset logo --style structure --format all --output docs/logo
 ```
 
 CLI options are assembled in this order: preset defaults, then `--style`, then explicit flags. Braille rejects an explicit `--ramp` or `--edge-glyphs` because those options describe incompatible cell models. Structural Unicode accepts `--ramp`; the custom ramp becomes its tonal fallback where no structural stroke is emitted.
@@ -126,7 +126,7 @@ CLI options are assembled in this order: preset defaults, then `--style`, then e
 Detailed portrait:
 
 ```bash
-readme-ascii portrait.webp \
+charosaic portrait.webp \
   --preset portrait \
   --width 104 \
   --dither atkinson \
@@ -137,7 +137,7 @@ readme-ascii portrait.webp \
 High-contrast logo with structural edge glyphs:
 
 ```bash
-readme-ascii mark.png \
+charosaic mark.png \
   --preset logo \
   --edge-glyphs \
   --background '#ffffff' \
@@ -147,7 +147,7 @@ readme-ascii mark.png \
 Stable SVG for a README:
 
 ```bash
-readme-ascii hero.jpg \
+charosaic hero.jpg \
   --preset ultra \
   --format svg \
   --output docs/hero-ascii.svg
@@ -185,7 +185,7 @@ The web interface can save the current conversion controls and Markdown-details 
 
 Preset data stays in the current browser profile unless you explicitly export the JSON file.
 
-Exported presets use schema v2. Stored or imported schema v1 presets are migrated in memory with `renderMode: tone` and `edgeStyle: ascii`; simply loading or applying one does not rewrite browser storage. The existing storage key, `readme-ascii-studio.custom-presets.v1`, intentionally remains unchanged. The next successful preset mutation persists all entries as v2. Unknown future schema versions are rejected before any preset, selection, controls, or stored bytes can change.
+Exported presets use schema v2. Stored or imported schema v1 presets are migrated in memory with `renderMode: tone` and `edgeStyle: ascii`; simply loading or applying one does not rewrite browser storage. Browser presets use the `charosaic.custom-presets.v1` storage namespace. The next successful preset mutation persists all entries as v2. Unknown future schema versions are rejected before any preset, selection, controls, or stored bytes can change.
 
 ## Output choices
 
@@ -263,7 +263,7 @@ blocks-fine  █▉▊▋▌▍▎▏
 The CLI accepts either a built-in name or a custom string:
 
 ```bash
-readme-ascii image.png --ramp '@#*:. ' --output custom.md
+charosaic image.png --ramp '@#*:. ' --output custom.md
 ```
 
 Use at least two characters. A final space gives bright pixels a true blank value. Custom ramps belong to tone rendering and Structural Unicode fallback rendering; Braille packing does not use a ramp.
@@ -324,7 +324,7 @@ npm run release:check
 
 `npm run test:e2e` builds the production web app, installs the Playwright-managed Chromium build when it is missing, and smoke-tests that built app through `vite preview`. It verifies the strict-ASCII default, the logo/edge preset, real file upload, Fine Blocks, Braille, Structural Unicode, ASCII/Markdown/SVG output, exact clipboard/download contents, saved-preset v2 reload, a clean browser console, and 390-pixel mobile layout. The same test honors `BASE_PATH`, so GitHub Pages repository subpaths exercise the deployed path shape rather than a root-only build.
 
-`npm run release:check` adds a high-severity dependency audit, enforced global and browser-controller per-file coverage thresholds, production web and CLI builds, the complete Chromium workflow, compiled-CLI subprocess tests, and byte-for-byte regeneration of both legacy and new character-style goldens. It also creates the real npm tarball, derives and verifies the dynamic CLI-only JavaScript allowlist, installs that tarball into an empty consumer project, runs the packaged `readme-ascii --help`, and confirms that the installed CLI reproduces every committed text, Markdown, and SVG example byte for byte. Pull-request CI installs Chromium's Linux system dependencies and runs this complete gate in addition to Node 20/22/24/26 checks, while macOS and Windows jobs exercise the compiled CLI safety suite. `npm run verify:examples` and `npm run verify:package` can also be run independently; the former rebuilds the CLI before comparing local outputs, while the latter expects `dist-cli` to have already been built.
+`npm run release:check` adds a high-severity dependency audit, enforced global and browser-controller per-file coverage thresholds, production web and CLI builds, the complete Chromium workflow, compiled-CLI subprocess tests, and byte-for-byte regeneration of both legacy and new character-style goldens. It also creates the real npm tarball, derives and verifies the dynamic CLI-only JavaScript allowlist, installs that tarball into an empty consumer project, runs the packaged `charosaic --help`, and confirms that the installed CLI reproduces every committed text, Markdown, and SVG example byte for byte. Pull-request CI installs Chromium's Linux system dependencies and runs this complete gate in addition to Node 20/22/24/26 checks, while macOS and Windows jobs exercise the compiled CLI safety suite. `npm run verify:examples` and `npm run verify:package` can also be run independently; the former rebuilds the CLI before comparing local outputs, while the latter expects `dist-cli` to have already been built.
 
 `npm pack --dry-run --foreground-scripts` and `npm publish --dry-run --foreground-scripts` may be used as final package simulations. A publish dry run is verification only: it does not create a live npm release. Real publication remains a separate, explicitly authorized action.
 
@@ -363,27 +363,6 @@ Workflow actions are pinned to reviewed immutable commits; `.github/dependabot.y
 
 After pushing the repository, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. The workflow supplies the repository-name base path automatically.
 
-## Design notes from the reference review
-
-This project was inspired by [`khrome/ascii-art`](https://github.com/khrome/ascii-art), but it is an independent implementation aimed at a narrower target.
-
-The reference project is a broad JavaScript/ANSI composition toolkit for images, fonts, tables, graphs, styles, browser use, and Node use. Its image module maps a simple RGB average to predefined value scales, emits terminal color codes, uses native Canvas in Node, and offers line-art/stipple/posterized modes.
-
-README ASCII Studio keeps the useful ideas—configurable ramps, browser and Node support, multiple output modes—but changes the center of gravity:
-
-| Concern            | Reference orientation                                 | README ASCII Studio orientation                                           |
-| ------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------- |
-| Primary surface    | Terminal and ANSI composition                         | GitHub README Markdown                                                    |
-| Main image output  | ANSI-colored characters/backgrounds                   | Plain ASCII, safe Markdown, accessible SVG                                |
-| Brightness model   | Arithmetic RGB average                                | Linearized sRGB relative luminance                                        |
-| Geometry           | Fixed terminal distortion constants                   | User-adjustable character-cell aspect ratio                               |
-| Detail handling    | Direct downsample/value scale plus line/stipple modes | Oversampling, auto-levels, local detail, dithering, optional Sobel glyphs |
-| Node image backend | Native `canvas`                                       | Sharp/libvips                                                             |
-| API shape          | Large chained composition toolkit                     | Focused shared core, web UI, and CLI                                      |
-| README safety      | Not the main goal                                     | Dynamic fence collision handling and optional `<details>`                 |
-
-The source checkout also contains a longer Turkish review at `docs/reference-analysis-tr.md`; project documentation is intentionally excluded from the CLI-only npm package.
-
 ## Practical limits
 
 - Very wide code blocks can scroll horizontally on mobile. Start near 70–96 columns for a general README.
@@ -399,10 +378,10 @@ The source checkout also contains a longer Turkish review at `docs/reference-ana
 
 ## Open-source project
 
-- Read [`CONTRIBUTING.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/CONTRIBUTING.md) before opening a pull request.
-- Report security issues through the process in [`SECURITY.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/SECURITY.md); do not disclose suspected vulnerabilities in public issues.
-- Participation expectations are documented in [`CODE_OF_CONDUCT.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/CODE_OF_CONDUCT.md).
-- Release history is recorded in [`CHANGELOG.md`](https://github.com/aliyilmazco/ascii-art-for-md/blob/main/CHANGELOG.md).
+- Read [`CONTRIBUTING.md`](https://github.com/aliyilmazco/charosaic/blob/main/CONTRIBUTING.md) before opening a pull request.
+- Report security issues through the process in [`SECURITY.md`](https://github.com/aliyilmazco/charosaic/blob/main/SECURITY.md); do not disclose suspected vulnerabilities in public issues.
+- Participation expectations are documented in [`CODE_OF_CONDUCT.md`](https://github.com/aliyilmazco/charosaic/blob/main/CODE_OF_CONDUCT.md).
+- Release history is recorded in [`CHANGELOG.md`](https://github.com/aliyilmazco/charosaic/blob/main/CHANGELOG.md).
 
 The npm package is intentionally CLI-only; the browser studio and repository documentation remain available from the source repository.
 

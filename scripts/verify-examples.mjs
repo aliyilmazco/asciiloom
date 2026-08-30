@@ -8,7 +8,7 @@ import { EXAMPLE_CASES } from './example-cases.mjs';
 
 const execFileAsync = promisify(execFile);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const temporaryDirectory = await mkdtemp(join(tmpdir(), 'readme-ascii-studio-examples-'));
+const temporaryDirectory = await mkdtemp(join(tmpdir(), 'charosaic-examples-'));
 
 try {
   await Promise.all(

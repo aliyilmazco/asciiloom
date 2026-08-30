@@ -9,8 +9,8 @@ import { EXAMPLE_CASES } from './example-cases.mjs';
 
 const execFileAsync = promisify(execFile);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const packageName = 'readme-ascii-studio';
-const executableName = 'readme-ascii';
+const packageName = 'charosaic';
+const executableName = 'charosaic';
 const executablePath = 'dist-cli/cli.js';
 const packagedSourcePattern = 'dist-cli/**/*.js';
 const registry = 'https://registry.npmjs.org/';
@@ -433,7 +433,7 @@ export async function verifyPackage() {
   const compiledFiles = await collectCompiledJavaScriptFiles(join(root, 'dist-cli'));
   const expectedFiles = buildExpectedPackageFileList(compiledFiles);
   validatePackagedReadme(readme, expectedFiles);
-  const temporaryDirectory = await mkdtemp(join(tmpdir(), 'readme-ascii-studio-package-'));
+  const temporaryDirectory = await mkdtemp(join(tmpdir(), 'charosaic-package-'));
 
   try {
     const { stdout } = await runNpm([
