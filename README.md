@@ -55,6 +55,31 @@ npm run preview
 
 The static site is written to `dist/`.
 
+### Deploy to Cloudflare Workers
+
+The repository's `wrangler.jsonc` publishes `dist/` as [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/). The configured Worker name is `ascii-art-for-md`; it must match the Worker connected to this repository in Cloudflare.
+
+Use these [Workers Builds settings](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/):
+
+| Setting                          | Value                          |
+| -------------------------------- | ------------------------------ |
+| Root directory                   | Repository root                |
+| Build command                    | `npm run build:web`            |
+| Deploy command (production)      | `npx wrangler deploy`          |
+| Preview deploy command           | `npx wrangler versions upload` |
+| `BASE_PATH` environment variable | `/`, or leave unset            |
+
+`wrangler versions upload` uploads a version without promoting it to production. Use `wrangler deploy` for the production deploy command. Keep `BASE_PATH` at `/` for Workers; the GitHub Pages workflow sets its own repository-specific base path.
+
+To check the configuration locally without publishing:
+
+```bash
+npm run build:web
+npx wrangler@4.129.0 deploy --dry-run
+```
+
+To serve the build locally through Wrangler, run `npx wrangler@4.129.0 dev --local` and open the URL it prints.
+
 ## Quick start: CLI
 
 The public npm package and installed executable are both named `charosaic`. The npm package distributes only the CLI; the browser studio remains available from this source repository and is not included in the package's runtime contents.
