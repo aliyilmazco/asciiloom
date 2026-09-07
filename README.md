@@ -32,7 +32,7 @@ Charosaic handles those concerns directly rather than adapting a terminal render
 - **README-safe Markdown:** the fenced-code delimiter is selected and lengthened automatically so generated punctuation cannot close the block.
 - **Three outputs for every style:** plain text, paste-ready Markdown, and accessible SVG can be generated separately or together.
 - **Opt-in Unicode:** Unicode styles are never forced and may vary with the viewer's monospace font.
-- **No runtime framework:** the web interface is small, static, and deployable to GitHub Pages.
+- **No runtime framework:** the web interface is small, static, and deployable to Cloudflare Workers.
 - **Strict and tested:** strict TypeScript, deterministic conversion, and unit tests for mapping and output safety.
 
 ## Quick start: web interface
@@ -69,7 +69,7 @@ Use these [Workers Builds settings](https://developers.cloudflare.com/workers/ci
 | Preview deploy command           | `npx wrangler versions upload` |
 | `BASE_PATH` environment variable | `/`, or leave unset            |
 
-`wrangler versions upload` uploads a version without promoting it to production. Use `wrangler deploy` for the production deploy command. Keep `BASE_PATH` at `/` for Workers; the GitHub Pages workflow sets its own repository-specific base path.
+`wrangler versions upload` uploads a version without promoting it to production. Use `wrangler deploy` for the production deploy command. Keep `BASE_PATH` at `/` for Workers.
 
 To check the configuration locally without publishing:
 
@@ -347,7 +347,7 @@ npm run release:check
 
 `npm run check` verifies the lockfile registry, runs strict TypeScript checks for browser, CLI, tests, and tooling, enforces Oxlint and Prettier, and runs the non-emitting unit/browser/CLI-runtime suite.
 
-`npm run test:e2e` builds the production web app, installs the Playwright-managed Chromium build when it is missing, and smoke-tests that built app through `vite preview`. It verifies the strict-ASCII default, the logo/edge preset, real file upload, Fine Blocks, Braille, Structural Unicode, ASCII/Markdown/SVG output, exact clipboard/download contents, saved-preset v2 reload, a clean browser console, and 390-pixel mobile layout. The same test honors `BASE_PATH`, so GitHub Pages repository subpaths exercise the deployed path shape rather than a root-only build.
+`npm run test:e2e` builds the production web app, installs the Playwright-managed Chromium build when it is missing, and smoke-tests that built app through `vite preview`. It verifies the strict-ASCII default, the logo/edge preset, real file upload, Fine Blocks, Braille, Structural Unicode, ASCII/Markdown/SVG output, exact clipboard/download contents, saved-preset v2 reload, a clean browser console, and 390-pixel mobile layout. The same test honors `BASE_PATH` for deployments under a subpath.
 
 `npm run release:check` adds a high-severity dependency audit, enforced global and browser-controller per-file coverage thresholds, production web and CLI builds, the complete Chromium workflow, compiled-CLI subprocess tests, and byte-for-byte regeneration of both legacy and new character-style goldens. It also creates the real npm tarball, derives and verifies the dynamic CLI-only JavaScript allowlist, installs that tarball into an empty consumer project, runs the packaged `charosaic --help`, and confirms that the installed CLI reproduces every committed text, Markdown, and SVG example byte for byte. Pull-request CI installs Chromium's Linux system dependencies and runs this complete gate in addition to Node 20/22/24/26 checks, while macOS and Windows jobs exercise the compiled CLI safety suite. `npm run verify:examples` and `npm run verify:package` can also be run independently; the former rebuilds the CLI before comparing local outputs, while the latter expects `dist-cli` to have already been built.
 
@@ -377,16 +377,13 @@ Tests cover:
 - input/output path, symlink, and hard-link collision prevention;
 - permission-preserving atomic CLI writes and compiled output compatibility.
 
-## GitHub Pages
+## Continuous integration
 
-Two workflows are included:
-
-- `.github/workflows/ci.yml` checks Node 20/22/24/26, including the compiled CLI on every supported major, the Chromium-backed complete release gate, and compiled CLI behavior on macOS and Windows for pushes and pull requests.
-- `.github/workflows/pages.yml` smoke-tests the production build at its repository base path, then deploys the static site to GitHub Pages from `main`, with deployment credentials scoped only to the deploy job.
+`.github/workflows/ci.yml` checks Node 20/22/24/26, including the compiled CLI on every supported major, the Chromium-backed complete release gate, and compiled CLI behavior on macOS and Windows for pushes and pull requests.
 
 Workflow actions are pinned to reviewed immutable commits; `.github/dependabot.yml` checks weekly for action updates.
 
-After pushing the repository, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. The workflow supplies the repository-name base path automatically.
+The web interface is deployed through Cloudflare Workers using the [settings above](#deploy-to-cloudflare-workers).
 
 ## Practical limits
 
