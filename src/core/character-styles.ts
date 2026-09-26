@@ -2,7 +2,17 @@ import { RAMPS } from './presets.js';
 import type { AsciiOptions } from './types.js';
 
 export type CharacterStyleId =
-  'readme' | 'detailed' | 'soft' | 'minimal' | 'blocks' | 'blocks-fine' | 'braille' | 'structure';
+  | 'readme'
+  | 'detailed'
+  | 'soft'
+  | 'minimal'
+  | 'calibrated'
+  | 'alphanumeric'
+  | 'blocks'
+  | 'blocks-fine'
+  | 'bars'
+  | 'braille'
+  | 'structure';
 
 export interface CharacterStyle {
   readonly id: CharacterStyleId;
@@ -49,6 +59,27 @@ export const CHARACTER_STYLES = [
     options: { ramp: RAMPS.minimal, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
   },
   {
+    id: 'calibrated',
+    label: 'Calibrated ASCII',
+    description: 'Strict ASCII · 14 levels measured stable across fonts',
+    portability: 'strict-ascii',
+    preview: RAMPS.calibrated,
+    options: { ramp: RAMPS.calibrated, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
+  },
+  {
+    id: 'alphanumeric',
+    label: 'Letters only',
+    description: 'Strict ASCII · letters, no punctuation noise',
+    portability: 'strict-ascii',
+    preview: RAMPS.alphanumeric,
+    options: {
+      ramp: RAMPS.alphanumeric,
+      renderMode: 'tone',
+      edgeGlyphs: false,
+      edgeStyle: 'ascii',
+    },
+  },
+  {
     id: 'blocks',
     label: 'Unicode shades',
     description: 'Unicode · font-dependent block shading',
@@ -68,6 +99,14 @@ export const CHARACTER_STYLES = [
       edgeGlyphs: false,
       edgeStyle: 'ascii',
     },
+  },
+  {
+    id: 'bars',
+    label: 'Vertical bars',
+    description: 'Unicode · nine lower-block levels',
+    portability: 'unicode',
+    preview: RAMPS.bars,
+    options: { ramp: RAMPS.bars, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
   },
   {
     id: 'braille',
@@ -111,7 +150,9 @@ export function resolveCharacterStyleId(options: AsciiOptions): CharacterStyleId
   if (options.edgeGlyphs && options.edgeStyle === 'unicode') return 'structure';
   const toneStyle = CHARACTER_STYLES.find(
     (style) =>
-      style.id !== 'braille' && style.id !== 'structure' && style.options.ramp === options.ramp,
+      style.options.renderMode === 'tone' &&
+      style.id !== 'structure' &&
+      style.options.ramp === options.ramp,
   );
   return toneStyle?.id ?? 'custom';
 }

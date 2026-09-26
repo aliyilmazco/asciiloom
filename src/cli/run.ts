@@ -15,11 +15,13 @@ Usage:
 
 Options:
   -p, --preset <name>       readme | portrait | logo | ultra | unicode
-      --style <name>        readme | detailed | soft | minimal | blocks | blocks-fine | braille | structure
+      --style <name>        readme | detailed | soft | minimal | calibrated | alphanumeric |
+                            blocks | blocks-fine | bars | braille | structure
   -w, --width <columns>     Output width (2-400)
       --height <rows>       Override calculated row count
       --aspect <ratio>      Character width/height correction (default 0.5)
-      --ramp <name|string>  readme | detailed | soft | minimal | blocks, or a custom ramp
+      --ramp <name|string>  readme | detailed | soft | minimal | calibrated | alphanumeric |
+                            blocks | blocks-fine | bars, or a custom ramp
       --dither <mode>       none | atkinson | floyd-steinberg | bayer
       --contrast <number>   Contrast multiplier
       --brightness <number> Brightness offset (-1 to 1)

@@ -4,6 +4,10 @@ All notable changes to Charosaic are recorded here.
 
 ## [Unreleased]
 
+### Added
+
+- `calibrated` (14 levels) and `alphanumeric` strict-ASCII styles built from glyph ink coverage measured in Menlo, SF Mono, and Courier New, plus a Unicode `bars` style.
+
 ### Changed
 
 - Cells are quantized in perceptual lightness (CIE L\*) instead of linear luminance, so midtones no longer collapse onto dark glyphs and output tracks the source image more closely. Rendered output differs from 1.0.0.

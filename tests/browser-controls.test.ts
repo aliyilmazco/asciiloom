@@ -151,20 +151,13 @@ describe('browser conversion controls', () => {
     controls.dispose();
   });
 
-  it('exposes a display-only custom state and eight selectable character styles', () => {
+  it('exposes a display-only custom state and every selectable character style', () => {
     installControls();
     const controls = createConversionControls(document);
 
     expect(CHARACTER_STYLE_ENTRIES.map(({ value }) => value)).toEqual([
       'custom',
-      'readme',
-      'detailed',
-      'soft',
-      'minimal',
-      'blocks',
-      'blocks-fine',
-      'braille',
-      'structure',
+      ...CHARACTER_STYLES.map(({ id }) => id),
     ]);
     expect(
       Array.from(document.querySelectorAll('#characterStyleListbox [role="option"]')).map(

@@ -8,14 +8,17 @@ import {
 import { DEFAULT_OPTIONS, RAMPS, optionsForPreset } from '../src/core/presets.js';
 
 describe('character style registry', () => {
-  it('publishes the eight stable style identifiers in UI order', () => {
+  it('publishes the stable style identifiers in UI order', () => {
     expect(CHARACTER_STYLES.map(({ id }) => id)).toEqual([
       'readme',
       'detailed',
       'soft',
       'minimal',
+      'calibrated',
+      'alphanumeric',
       'blocks',
       'blocks-fine',
+      'bars',
       'braille',
       'structure',
     ]);
