@@ -9,6 +9,11 @@ export type CharacterStyleId =
   | 'minimal'
   | 'calibrated'
   | 'alphanumeric'
+  | 'classic'
+  | 'jp2a'
+  | 'bubbles'
+  | 'matrix'
+  | 'silhouette'
   | 'blocks'
   | 'blocks-fine'
   | 'bars'
@@ -83,6 +88,51 @@ export const CHARACTER_STYLES = [
     preview: RAMPS.alphanumeric,
     options: {
       ramp: RAMPS.alphanumeric,
+      renderMode: 'tone',
+      edgeGlyphs: false,
+      edgeStyle: 'ascii',
+    },
+  },
+  {
+    id: 'classic',
+    label: 'Classic 10-level',
+    description: 'Strict ASCII · the well-known Paul Bourke ramp',
+    portability: 'strict-ascii',
+    preview: RAMPS.classic,
+    options: { ramp: RAMPS.classic, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
+  },
+  {
+    id: 'jp2a',
+    label: 'jp2a',
+    description: 'Strict ASCII · the jp2a terminal converter set',
+    portability: 'strict-ascii',
+    preview: RAMPS.jp2a,
+    options: { ramp: RAMPS.jp2a, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
+  },
+  {
+    id: 'bubbles',
+    label: 'Bubbles',
+    description: 'Strict ASCII · round @Oo dots',
+    portability: 'strict-ascii',
+    preview: RAMPS.bubbles,
+    options: { ramp: RAMPS.bubbles, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
+  },
+  {
+    id: 'matrix',
+    label: 'Matrix binary',
+    description: 'Strict ASCII · 0 and 1 digits',
+    portability: 'strict-ascii',
+    preview: RAMPS.matrix,
+    options: { ramp: RAMPS.matrix, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
+  },
+  {
+    id: 'silhouette',
+    label: 'Silhouette',
+    description: 'Strict ASCII · two-level # stencil for logos',
+    portability: 'strict-ascii',
+    preview: RAMPS.silhouette,
+    options: {
+      ramp: RAMPS.silhouette,
       renderMode: 'tone',
       edgeGlyphs: false,
       edgeStyle: 'ascii',

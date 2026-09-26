@@ -13,6 +13,12 @@ export const RAMPS = {
   blocks: '█▓▒░ ',
   'blocks-fine': '█▉▊▋▌▍▎▏ ',
   bars: '█▇▆▅▄▃▂▁ ',
+  // Widely recognized community sets, kept verbatim (dark → light) rather than re-measured.
+  classic: '@%#*+=-:. ',
+  jp2a: "MWNXK0Okxdolc:;,'. ",
+  bubbles: '@Oo:. ',
+  matrix: '01 ',
+  silhouette: '# ',
 } as const;
 
 export const DEFAULT_OPTIONS: AsciiOptions = {

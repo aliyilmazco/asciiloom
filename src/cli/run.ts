@@ -16,12 +16,14 @@ Usage:
 Options:
   -p, --preset <name>       readme | portrait | logo | ultra | unicode
       --style <name>        readme | shape | detailed | soft | minimal | calibrated |
-                            alphanumeric | blocks | blocks-fine | bars | braille | structure
+                            alphanumeric | classic | jp2a | bubbles | matrix | silhouette |
+                            blocks | blocks-fine | bars | braille | structure
   -w, --width <columns>     Output width (2-400)
       --height <rows>       Override calculated row count
       --aspect <ratio>      Character width/height correction (default 0.5)
       --ramp <name|string>  readme | detailed | soft | minimal | calibrated | alphanumeric |
-                            blocks | blocks-fine | bars, or a custom ramp
+                            blocks | blocks-fine | bars | classic | jp2a | bubbles | matrix |
+                            silhouette, or a custom ramp
       --dither <mode>       none | atkinson | floyd-steinberg | bayer
       --contrast <number>   Contrast multiplier
       --brightness <number> Brightness offset (-1 to 1)

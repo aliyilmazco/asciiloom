@@ -259,26 +259,31 @@ The renderer intentionally separates image preparation from glyph mapping so the
 
 ## Character styles
 
-The browser and `--style` CLI option expose twelve stable styles. Strict ASCII remains the default; Unicode styles are opt-in and their exact appearance depends on the viewer's font. For output that looks most like the source image, use `shape`.
+The browser and `--style` CLI option expose seventeen stable styles. Strict ASCII remains the default; Unicode styles are opt-in and their exact appearance depends on the viewer's font. For output that looks most like the source image, use `shape`.
 
-| ID             | Portability  | Renderer model                       | Intended use                                     |
-| -------------- | ------------ | ------------------------------------ | ------------------------------------------------ |
-| `readme`       | Strict ASCII | 10-level tone ramp                   | Portable general-purpose README artwork          |
-| `shape`        | Strict ASCII | 3×4 glyph-shape matching per cell    | Closest likeness: outlines, diagonals, curves    |
-| `detailed`     | Strict ASCII | Long tone ramp                       | Faces, textures, and smooth tonal transitions    |
-| `soft`         | Strict ASCII | Gentle tone ramp                     | Light gradients and restrained texture           |
-| `minimal`      | Strict ASCII | Short tone ramp                      | Bold silhouettes, icons, and line drawings       |
-| `calibrated`   | Strict ASCII | 14 measured, font-stable levels      | Most faithful tones across GitHub fonts          |
-| `alphanumeric` | Strict ASCII | 10 letter-only levels                | Clean text-like texture without punctuation      |
-| `blocks`       | Unicode      | Five block-shade levels              | Compact, high-contrast tonal output              |
-| `blocks-fine`  | Unicode      | Nine ordered fractional block levels | Smoother block gradients                         |
-| `bars`         | Unicode      | Nine lower-block height levels       | Bar-chart texture with smooth vertical steps     |
-| `braille`      | Unicode      | Real 2×4 binary subcells             | Dense detail in a compact character grid         |
-| `structure`    | Unicode      | Connectivity-aware contour strokes   | Diagrams, logos, corners, junctions, and crosses |
+| ID             | Portability  | Renderer model                        | Intended use                                     |
+| -------------- | ------------ | ------------------------------------- | ------------------------------------------------ |
+| `readme`       | Strict ASCII | 10-level tone ramp                    | Portable general-purpose README artwork          |
+| `shape`        | Strict ASCII | 3×4 glyph-shape matching per cell     | Closest likeness: outlines, diagonals, curves    |
+| `detailed`     | Strict ASCII | Long tone ramp                        | Faces, textures, and smooth tonal transitions    |
+| `soft`         | Strict ASCII | Gentle tone ramp                      | Light gradients and restrained texture           |
+| `minimal`      | Strict ASCII | Short tone ramp                       | Bold silhouettes, icons, and line drawings       |
+| `calibrated`   | Strict ASCII | 14 measured, font-stable levels       | Most faithful tones across GitHub fonts          |
+| `alphanumeric` | Strict ASCII | 10 letter-only levels                 | Clean text-like texture without punctuation      |
+| `classic`      | Strict ASCII | Paul Bourke's famous 10-level ramp    | The recognizable "standard" ASCII-art look       |
+| `jp2a`         | Strict ASCII | jp2a terminal converter character set | Terminal-style photos with letter texture        |
+| `bubbles`      | Strict ASCII | Round `@Oo:.` levels                  | Soft, dotted, playful rendering                  |
+| `matrix`       | Strict ASCII | Binary `0` / `1` digits               | "Hacker" / Matrix-style banners                  |
+| `silhouette`   | Strict ASCII | Two-level `#` stencil                 | Logos and bold shapes, like classic banners      |
+| `blocks`       | Unicode      | Five block-shade levels               | Compact, high-contrast tonal output              |
+| `blocks-fine`  | Unicode      | Nine ordered fractional block levels  | Smoother block gradients                         |
+| `bars`         | Unicode      | Nine lower-block height levels        | Bar-chart texture with smooth vertical steps     |
+| `braille`      | Unicode      | Real 2×4 binary subcells              | Dense detail in a compact character grid         |
+| `structure`    | Unicode      | Connectivity-aware contour strokes    | Diagrams, logos, corners, junctions, and crosses |
 
 ### Advanced tone ramps
 
-Tone ramps are ordered from darkest/densest to lightest/sparsest. The `calibrated` and `alphanumeric` ramps were derived from measured glyph ink coverage and get strictly lighter at every step in Menlo, SF Mono, and Courier New. The CLI accepts these nine named ramps independently of `--style`:
+Tone ramps are ordered from darkest/densest to lightest/sparsest. The `calibrated` and `alphanumeric` ramps were derived from measured glyph ink coverage and get strictly lighter at every step in Menlo, SF Mono, and Courier New. `classic`, `jp2a`, `bubbles`, `matrix`, and `silhouette` are popular community sets kept verbatim for their familiar look. The CLI accepts these fourteen named ramps independently of `--style`:
 
 ```text
 readme        @#%*=+:-.
@@ -290,6 +295,11 @@ alphanumeric  BRDPeynvl
 blocks        █▓▒░
 blocks-fine   █▉▊▋▌▍▎▏
 bars          █▇▆▅▄▃▂▁
+classic       @%#*+=-:.
+jp2a          MWNXK0Okxdolc:;,'.
+bubbles       @Oo:.
+matrix        01
+silhouette    #
 ```
 
 The CLI accepts either a built-in name or a custom string:
