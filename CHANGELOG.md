@@ -4,6 +4,11 @@ All notable changes to Charosaic are recorded here.
 
 ## [Unreleased]
 
+### Changed
+
+- Cells are quantized in perceptual lightness (CIE L\*) instead of linear luminance, so midtones no longer collapse onto dark glyphs and output tracks the source image more closely. Rendered output differs from 1.0.0.
+- `readme`, `soft`, and `minimal` ramps reorder glyph pairs (`%#`, `+=`, `-:`) that were inverted in every measured font.
+
 ### Fixed
 
 - Wide Braille renders in the browser no longer fail the prepared-canvas pixel limit.

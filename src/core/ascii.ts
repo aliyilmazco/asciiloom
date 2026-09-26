@@ -42,6 +42,13 @@ export function relativeLuminance(r: number, g: number, b: number): number {
   );
 }
 
+// CIE L* / 100. Glyph ramps step evenly in perceived lightness, so linear luminance (where
+// mid-grey is ~0.21) must be mapped before quantizing or midtones collapse onto dark glyphs.
+function perceptualLightness(luminance: number): number {
+  const y = clamp(luminance);
+  return y > 216 / 24_389 ? 1.16 * Math.cbrt(y) - 0.16 : (y * 24_389) / 2700;
+}
+
 export function calculateOutputHeight(
   sourceWidth: number,
   sourceHeight: number,
@@ -101,7 +108,7 @@ function downsampleToCells(
         }
       }
 
-      result[cellY * outputWidth + cellX] = samples > 0 ? sum / samples : 0;
+      result[cellY * outputWidth + cellX] = samples > 0 ? perceptualLightness(sum / samples) : 0;
     }
   }
 

@@ -1,10 +1,12 @@
 import type { AsciiOptions, Preset } from './types.js';
 
+// Ramps run darkest → lightest. Short ramps are ordered so no adjacent pair is inverted in
+// measured glyph ink coverage for Menlo, SF Mono, and Courier New.
 export const RAMPS = {
-  readme: '@%#*+=-:. ',
+  readme: '@#%*=+:-. ',
   detailed: '@$B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+<>i!lI;:,"^\'. ',
-  soft: 'MWN$@%#*+=-:,. ',
-  minimal: '#*+=-:. ',
+  soft: 'MWN$@#%*=+:-,. ',
+  minimal: '#*=+:-. ',
   blocks: '█▓▒░ ',
   'blocks-fine': '█▉▊▋▌▍▎▏ ',
 } as const;

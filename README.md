@@ -249,7 +249,7 @@ The renderer intentionally separates image preparation from glyph mapping so the
 3. **Oversample:** the source is resized above the final character grid to reduce aliasing before cell averaging.
 4. **Composite alpha:** RGBA pixels are blended against the selected background.
 5. **Convert to luminance:** sRGB channels are linearized, then combined using perceptual luminance weights.
-6. **Average into cells:** tone styles average samples into character cells; Braille preserves a real 2×4 subcell grid for every output character.
+6. **Average into cells:** tone styles average linear luminance into character cells (Braille preserves a real 2×4 subcell grid), then convert each cell to perceptual lightness (CIE L\*) so ramp levels are spent evenly on visible tones instead of crowding midtones into dark glyphs.
 7. **Normalize:** optional low/high percentile auto-levels reduce the impact of isolated extreme pixels.
 8. **Recover local detail:** a 3×3 Gaussian blur creates a local reference; high-frequency information is blended back as an unsharp-detail term.
 9. **Apply tone controls:** contrast, brightness, gamma, and optional inversion.
@@ -277,10 +277,10 @@ The browser and `--style` CLI option expose eight stable styles. Strict ASCII re
 Tone ramps are ordered from darkest/densest to lightest/sparsest. The CLI accepts these six named ramps independently of `--style`:
 
 ```text
-readme       @%#*+=-:.
+readme       @#%*=+:-.
 detailed     @$B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+<>i!lI;:,"^'.
-soft         MWN$@%#*+=-:,.
-minimal      #*+=-:.
+soft         MWN$@#%*=+:-,.
+minimal      #*=+:-.
 blocks       █▓▒░
 blocks-fine  █▉▊▋▌▍▎▏
 ```

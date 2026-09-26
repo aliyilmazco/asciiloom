@@ -39,10 +39,15 @@ function grayscaleImage(
   return { data, width, height, channels: 4 };
 }
 
-function linearToSrgbByte(linear: number): number {
-  return Math.round(
-    255 * (linear <= 0.0031308 ? 12.92 * linear : 1.055 * Math.pow(linear, 1 / 2.4) - 0.055),
-  );
+// Reference CIE L*/100 for an sRGB grey byte, and its inverse, from the standard formulas.
+function lightnessOfByte(byte: number): number {
+  const y = relativeLuminance(byte, byte, byte);
+  return y > 216 / 24_389 ? 1.16 * Math.cbrt(y) - 0.16 : (y * 24_389) / 2700;
+}
+
+function byteForLightness(lightness: number): number {
+  const y = lightness > 0.08 ? ((lightness + 0.16) / 1.16) ** 3 : (lightness * 2700) / 24_389;
+  return Math.round(255 * (y <= 0.0031308 ? 12.92 * y : 1.055 * Math.pow(y, 1 / 2.4) - 0.055));
 }
 
 describe('calculateOutputHeight', () => {
@@ -69,8 +74,8 @@ describe('relativeLuminance', () => {
 });
 
 describe('convertRgbaToAscii', () => {
-  it('maps Fine Blocks through the unchanged tone pipeline', () => {
-    const image = grayscaleImage(9, 1, (x) => linearToSrgbByte(x / 8));
+  it('spreads an evenly perceived grey gradient across every Fine Blocks level', () => {
+    const image = grayscaleImage(9, 1, (x) => byteForLightness(x / 8));
     const result = convertRgbaToAscii(
       image,
       options({
@@ -235,7 +240,7 @@ describe('convertRgbaToAscii', () => {
   });
 
   it('applies the deterministic Bayer 4x4 threshold pattern', () => {
-    const image = grayscaleImage(4, 4, () => 188);
+    const image = grayscaleImage(4, 4, () => byteForLightness(0.5));
 
     const result = convertRgbaToAscii(image, options({ width: 4, ramp: '@.', dither: 'bayer' }), 4);
 
@@ -256,14 +261,14 @@ describe('convertRgbaToAscii', () => {
         edgeOptions,
         5,
       ).art,
-    ).toBe('@||||\n@||||\n@||||\n@||||\n@||||');
+    ).toBe('|||||\n|||||\n|||||\n|||||\n|||||');
     expect(
       convertRgbaToAscii(
         grayscaleImage(5, 5, (_x, y) => 50 + y * 40),
         edgeOptions,
         5,
       ).art,
-    ).toBe('@@@@@\n-----\n-----\n-----\n-----');
+    ).toBe('-----\n-----\n-----\n-----\n-----');
     expect(
       convertRgbaToAscii(
         grayscaleImage(5, 5, (x, y) => 40 + (x + y) * 25),
@@ -311,13 +316,15 @@ describe('convertRgbaToAscii', () => {
       1,
     );
 
+    const low = lightnessOfByte(0) * 0.25 + lightnessOfByte(64) * 0.75;
+    const high = lightnessOfByte(128) * 0.75 + lightnessOfByte(255) * 0.25;
     expect(Array.from(result.values)).toEqual([
       0,
-      expect.closeTo(0.0343221186, 9),
-      expect.closeTo(0.4750611812, 9),
+      expect.closeTo((lightnessOfByte(64) - low) / (high - low), 9),
+      expect.closeTo((lightnessOfByte(128) - low) / (high - low), 9),
       1,
     ]);
-    expect(result.art).toBe('@@% ');
+    expect(result.art).toBe('@@# ');
   });
 
   it('leaves local luminance unchanged when detail recovery is disabled', () => {
@@ -327,7 +334,7 @@ describe('convertRgbaToAscii', () => {
     const withDetail = convertRgbaToAscii(image, options({ width: 4, detail: 0.5 }), 2);
 
     expect(Array.from(withoutDetail.values)).toEqual(
-      levels.map((value) => expect.closeTo(relativeLuminance(value, value, value), 12)),
+      levels.map((value) => expect.closeTo(lightnessOfByte(value), 12)),
     );
     expect(Array.from(withDetail.values)).not.toEqual(Array.from(withoutDetail.values));
   });
