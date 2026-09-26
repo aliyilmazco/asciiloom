@@ -2,6 +2,12 @@
 
 All notable changes to Charosaic are recorded here.
 
+## [Unreleased]
+
+### Fixed
+
+- Dependency audit: `sharp` 0.35.4 and `vitest` 4.1.11.
+
 ## [1.0.0] - 2026-08-25
 
 ### Added
