@@ -6,6 +6,7 @@ All notable changes to Charosaic are recorded here.
 
 ### Fixed
 
+- Wide Braille renders in the browser no longer fail the prepared-canvas pixel limit.
 - Dependency audit: `sharp` 0.35.4 and `vitest` 4.1.11.
 
 ## [1.0.0] - 2026-08-25

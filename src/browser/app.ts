@@ -1,7 +1,7 @@
 import { resolveOutputDimensions, validateAsciiOptions } from '../core/validation.js';
 import { createConversionControls } from './controls.js';
 import type { PresetStorage } from './custom-presets.js';
-import { type LoadedImage, type prepareImageData } from './image.js';
+import { MAX_PREPARED_IMAGE_PIXELS, type LoadedImage, type prepareImageData } from './image.js';
 import { createImageSelectionController, isEditablePasteTarget } from './image-selection.js';
 import { createOutputController } from './output-controller.js';
 import { createPresetWorkflow } from './preset-workflow.js';
@@ -103,19 +103,29 @@ export function createBrowserApp(dependencies: BrowserAppDependencies): BrowserA
         options.width,
         options.cellAspectRatio,
       );
-      const oversample = options.width >= 140 ? 2 : 3;
-      const subcellScaleX = options.renderMode === 'braille' ? 2 : 1;
-      const subcellScaleY = options.renderMode === 'braille' ? 4 : 1;
+      const cellsX = dimensions.width * (options.renderMode === 'braille' ? 2 : 1);
+      const cellsY = dimensions.height * (options.renderMode === 'braille' ? 4 : 1);
+      // Braille multiplies cells 8×; drop oversampling until the canvas fits the pixel budget.
+      const oversample = Math.max(
+        1,
+        Math.min(
+          options.width >= 140 ? 2 : 3,
+          Math.floor(Math.sqrt(MAX_PREPARED_IMAGE_PIXELS / (cellsX * cellsY))),
+        ),
+      );
       const prepared = dependencies.prepareImage(
         loadedImage.source,
-        dimensions.width * subcellScaleX,
-        dimensions.height * subcellScaleY,
+        cellsX,
+        cellsY,
         oversample,
         options.background,
       );
-      const data = prepared.data.buffer.slice(
-        prepared.data.byteOffset,
-        prepared.data.byteOffset + prepared.data.byteLength,
+      // getImageData returns an exact, owned buffer: transfer it without copying.
+      const bytes = prepared.data;
+      const data = (
+        bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
+          ? bytes.buffer
+          : bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
       ) as ArrayBuffer;
       const result = await renderClient.render({
         revision,

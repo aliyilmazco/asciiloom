@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { createBrowserApp } from '../src/browser/app.js';
-import type { LoadedImage } from '../src/browser/image.js';
+import { MAX_PREPARED_IMAGE_PIXELS, type LoadedImage } from '../src/browser/image.js';
 import type { RenderRequest, RenderResponse } from '../src/browser/render-protocol.js';
 import { createMemoryPresetStorage } from './helpers/memory-preset-storage.js';
 
@@ -417,6 +417,31 @@ it('prepares true 2×4 subcells for an 88×28 Braille render', async () => {
     g: 255,
     b: 255,
   });
+  app.dispose();
+});
+
+it('keeps wide Braille renders within the prepared-image pixel budget', async () => {
+  const prepareImage = vi.fn(() => ({
+    data: new Uint8ClampedArray([0, 0, 0, 255]),
+    width: 1,
+    height: 1,
+    channels: 4 as const,
+  }));
+  const { app } = createApp({
+    createInitialImage: () => ({ ...loadedImageDouble('square'), width: 1000, height: 1000 }),
+    prepareImage,
+  });
+
+  document.querySelector<HTMLButtonElement>('#characterStyleTrigger')!.click();
+  document.querySelector<HTMLElement>('#characterStyleListbox [data-value="braille"]')!.click();
+  const width = document.querySelector<HTMLInputElement>('#width')!;
+  width.value = '180';
+  width.dispatchEvent(new Event('input'));
+  await vi.advanceTimersByTimeAsync(80);
+  const [, cellsX, cellsY, oversample] = prepareImage.mock.lastCall as unknown as number[];
+  expect(cellsX! * oversample! * cellsY! * oversample!).toBeLessThanOrEqual(
+    MAX_PREPARED_IMAGE_PIXELS,
+  );
   app.dispose();
 });
 
