@@ -3,6 +3,7 @@ import type { AsciiOptions } from './types.js';
 
 export type CharacterStyleId =
   | 'readme'
+  | 'shape'
   | 'detailed'
   | 'soft'
   | 'minimal'
@@ -33,6 +34,14 @@ export const CHARACTER_STYLES = [
     portability: 'strict-ascii',
     preview: RAMPS.readme,
     options: { ramp: RAMPS.readme, renderMode: 'tone', edgeGlyphs: false, edgeStyle: 'ascii' },
+  },
+  {
+    id: 'shape',
+    label: 'Shape match',
+    description: 'Strict ASCII · glyph shapes traced to image detail',
+    portability: 'strict-ascii',
+    preview: '/(_)\\',
+    options: { ramp: RAMPS.readme, renderMode: 'shape', edgeGlyphs: false, edgeStyle: 'ascii' },
   },
   {
     id: 'detailed',
@@ -146,7 +155,7 @@ export function applyCharacterStyle(options: AsciiOptions, id: CharacterStyleId)
 }
 
 export function resolveCharacterStyleId(options: AsciiOptions): CharacterStyleId | 'custom' {
-  if (options.renderMode === 'braille') return 'braille';
+  if (options.renderMode !== 'tone') return options.renderMode;
   if (options.edgeGlyphs && options.edgeStyle === 'unicode') return 'structure';
   const toneStyle = CHARACTER_STYLES.find(
     (style) =>

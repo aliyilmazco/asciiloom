@@ -6,6 +6,12 @@ export const EXAMPLE_CASES = [
     arguments: ['--preset', 'readme'],
   },
   {
+    name: 'shape',
+    input: 'examples/demo-source.png',
+    expectedBase: 'examples/character-styles/shape',
+    arguments: ['--style', 'shape', '--width', '72'],
+  },
+  {
     name: 'blocks-fine',
     input: 'tests/fixtures/character-styles/gradient.svg',
     expectedBase: 'examples/character-styles/blocks-fine',

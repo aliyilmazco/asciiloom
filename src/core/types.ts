@@ -1,6 +1,6 @@
 export type DitherMode = 'none' | 'floyd-steinberg' | 'atkinson' | 'bayer';
 export type OutputFormat = 'text' | 'markdown' | 'svg';
-export type RenderMode = 'tone' | 'braille';
+export type RenderMode = 'tone' | 'braille' | 'shape';
 export type EdgeStyle = 'ascii' | 'unicode';
 
 export interface RgbColor {

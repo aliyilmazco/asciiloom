@@ -179,11 +179,11 @@ export function parseCliCommand(args: string[]): CliCommand | HelpCommand {
       `Unknown style "${styleId}". Available styles: ${CHARACTER_STYLES.map(({ id }) => id).join(', ')}.`,
     );
   }
-  if (styleId === 'braille' && parsed.values.ramp !== undefined) {
-    throw new Error('--style braille cannot be combined with --ramp.');
+  if ((styleId === 'braille' || styleId === 'shape') && parsed.values.ramp !== undefined) {
+    throw new Error(`--style ${styleId} cannot be combined with --ramp.`);
   }
-  if (styleId === 'braille' && parsed.values['edge-glyphs']) {
-    throw new Error('--style braille cannot be combined with --edge-glyphs.');
+  if ((styleId === 'braille' || styleId === 'shape') && parsed.values['edge-glyphs']) {
+    throw new Error(`--style ${styleId} cannot be combined with --edge-glyphs.`);
   }
   const baseOptions =
     styleId === undefined ? presetOptions : applyCharacterStyle(presetOptions, styleId);

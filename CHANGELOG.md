@@ -6,6 +6,7 @@ All notable changes to Charosaic are recorded here.
 
 ### Added
 
+- `shape` strict-ASCII style: each character cell is sampled as a 3×4 grid and matched against the measured ink layout of all 95 printable ASCII glyphs, so outlines, diagonals, and curves follow the source image instead of only its average tone.
 - `calibrated` (14 levels) and `alphanumeric` strict-ASCII styles built from glyph ink coverage measured in Menlo, SF Mono, and Courier New, plus a Unicode `bars` style.
 
 ### Changed

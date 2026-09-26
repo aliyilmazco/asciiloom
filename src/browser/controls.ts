@@ -163,11 +163,11 @@ export function createConversionControls(document: Document): ConversionControls
     if (!style) return;
     retainedGlyphOptions = { ...style.options };
     elements.edgeGlyphsInput.checked = style.options.edgeGlyphs;
-    elements.edgeGlyphsInput.disabled = style.options.renderMode === 'braille';
+    elements.edgeGlyphsInput.disabled = style.options.renderMode !== 'tone';
   };
 
   const onEdgeGlyphsInput = (): void => {
-    if (retainedGlyphOptions.renderMode === 'braille') {
+    if (retainedGlyphOptions.renderMode !== 'tone') {
       elements.edgeGlyphsInput.checked = false;
       return;
     }
@@ -259,7 +259,7 @@ export function createConversionControls(document: Document): ConversionControls
         autoLevels: elements.autoLevelsInput.checked,
         invert: elements.invertInput.checked,
         edgeGlyphs:
-          retainedGlyphOptions.renderMode === 'braille' ? false : elements.edgeGlyphsInput.checked,
+          retainedGlyphOptions.renderMode !== 'tone' ? false : elements.edgeGlyphsInput.checked,
         background: parseHexColor(elements.backgroundInput.value),
       };
     },
@@ -283,7 +283,7 @@ export function createConversionControls(document: Document): ConversionControls
       elements.autoLevelsInput.checked = options.autoLevels;
       elements.invertInput.checked = options.invert;
       elements.edgeGlyphsInput.checked = options.edgeGlyphs;
-      elements.edgeGlyphsInput.disabled = options.renderMode === 'braille';
+      elements.edgeGlyphsInput.disabled = options.renderMode !== 'tone';
       elements.backgroundInput.value = colorToHex(options.background);
       updateDisplayedValues();
     },

@@ -187,7 +187,7 @@ describe('browser conversion controls', () => {
     expect(onInput).toHaveBeenCalledOnce();
     expect(controls.read()).toMatchObject(style.options);
     expect(document.querySelector<HTMLInputElement>('#edgeGlyphs')!.disabled).toBe(
-      style.id === 'braille',
+      style.options.renderMode !== 'tone',
     );
     controls.dispose();
   });

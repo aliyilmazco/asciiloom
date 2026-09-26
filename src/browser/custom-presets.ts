@@ -153,14 +153,20 @@ function readOptions(value: unknown, schemaVersion: 1 | 2): AsciiOptions {
   if (schemaVersion === 1) {
     return { ...legacy, renderMode: 'tone', edgeStyle: 'ascii' };
   }
-  if (value.renderMode !== 'tone' && value.renderMode !== 'braille') {
-    presetError('renderMode must be tone or braille.');
+  if (
+    value.renderMode !== 'tone' &&
+    value.renderMode !== 'braille' &&
+    value.renderMode !== 'shape'
+  ) {
+    presetError('renderMode must be tone, braille, or shape.');
   }
   if (value.edgeStyle !== 'ascii' && value.edgeStyle !== 'unicode') {
     presetError('edgeStyle must be ascii or unicode.');
   }
-  if (value.renderMode === 'braille' && legacy.edgeGlyphs) {
-    presetError('Braille render mode cannot be combined with edge glyphs.');
+  if (value.renderMode !== 'tone' && legacy.edgeGlyphs) {
+    presetError(
+      `${value.renderMode === 'braille' ? 'Braille' : 'Shape'} render mode cannot be combined with edge glyphs.`,
+    );
   }
   return {
     ...legacy,

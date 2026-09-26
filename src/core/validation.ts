@@ -11,7 +11,12 @@ export const DITHER_MODES = [
   'atkinson',
   'bayer',
 ] as const satisfies readonly DitherMode[];
-export const RENDER_MODES = ['tone', 'braille'] as const satisfies readonly RenderMode[];
+export const RENDER_MODES = ['tone', 'braille', 'shape'] as const satisfies readonly RenderMode[];
+/** Subcell samples per character cell (x, y) for modes that look inside a cell. */
+export const SUBCELL_GRID = {
+  braille: [2, 4],
+  shape: [3, 4],
+} as const satisfies Record<Exclude<RenderMode, 'tone'>, readonly [number, number]>;
 export const EDGE_STYLES = ['ascii', 'unicode'] as const satisfies readonly EdgeStyle[];
 
 export interface OutputDimensions {
@@ -158,8 +163,9 @@ export function validateAsciiOptions(options: AsciiOptions): void {
   if (!EDGE_STYLES.includes(options.edgeStyle as EdgeStyle)) {
     throw new RangeError(`edgeStyle must be one of: ${EDGE_STYLES.join(', ')}.`);
   }
-  if (options.renderMode === 'braille' && options.edgeGlyphs) {
-    throw new RangeError('Braille render mode cannot be combined with edge glyphs.');
+  if (options.renderMode !== 'tone' && options.edgeGlyphs) {
+    const mode = options.renderMode === 'braille' ? 'Braille' : 'Shape';
+    throw new RangeError(`${mode} render mode cannot be combined with edge glyphs.`);
   }
 
   if (typeof options.ramp !== 'string') {

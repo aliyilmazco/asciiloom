@@ -1,4 +1,4 @@
-import { resolveOutputDimensions, validateAsciiOptions } from '../core/validation.js';
+import { resolveOutputDimensions, SUBCELL_GRID, validateAsciiOptions } from '../core/validation.js';
 import { createConversionControls } from './controls.js';
 import type { PresetStorage } from './custom-presets.js';
 import { MAX_PREPARED_IMAGE_PIXELS, type LoadedImage, type prepareImageData } from './image.js';
@@ -103,9 +103,11 @@ export function createBrowserApp(dependencies: BrowserAppDependencies): BrowserA
         options.width,
         options.cellAspectRatio,
       );
-      const cellsX = dimensions.width * (options.renderMode === 'braille' ? 2 : 1);
-      const cellsY = dimensions.height * (options.renderMode === 'braille' ? 4 : 1);
-      // Braille multiplies cells 8×; drop oversampling until the canvas fits the pixel budget.
+      const [scaleX, scaleY] =
+        options.renderMode === 'tone' ? [1, 1] : SUBCELL_GRID[options.renderMode];
+      const cellsX = dimensions.width * scaleX;
+      const cellsY = dimensions.height * scaleY;
+      // Subcell modes multiply cells up to 12×; drop oversampling until the canvas fits the budget.
       const oversample = Math.max(
         1,
         Math.min(

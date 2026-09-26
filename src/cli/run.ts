@@ -4,7 +4,7 @@ import { convertRgbaToAscii } from '../core/ascii.js';
 import { toMarkdown } from '../core/markdown.js';
 import { assertXmlText, toSvg } from '../core/svg.js';
 import type { RgbaImage } from '../core/types.js';
-import { resolveOutputDimensions } from '../core/validation.js';
+import { resolveOutputDimensions, SUBCELL_GRID } from '../core/validation.js';
 
 export const CLI_HELP = `
 Charosaic CLI
@@ -15,8 +15,8 @@ Usage:
 
 Options:
   -p, --preset <name>       readme | portrait | logo | ultra | unicode
-      --style <name>        readme | detailed | soft | minimal | calibrated | alphanumeric |
-                            blocks | blocks-fine | bars | braille | structure
+      --style <name>        readme | shape | detailed | soft | minimal | calibrated |
+                            alphanumeric | blocks | blocks-fine | bars | braille | structure
   -w, --width <columns>     Output width (2-400)
       --height <rows>       Override calculated row count
       --aspect <ratio>      Character width/height correction (default 0.5)
@@ -45,6 +45,7 @@ Examples:
   charosaic portrait.jpg --preset portrait --output portrait.md
   charosaic logo.png --preset logo --format all --output docs/logo-ascii
   charosaic diagram.png --style structure --format svg -o diagram.svg
+  charosaic photo.png --style shape --width 100 -o photo.md
   charosaic photo.png --style braille --format text -o photo.txt
   charosaic photo.webp --width 104 --dither atkinson --format svg -o art.svg
 `;
@@ -148,8 +149,8 @@ export async function runCli(args: readonly string[], runtime: CliRuntime): Prom
     );
   }
 
-  const subcellScaleX = command.options.renderMode === 'braille' ? 2 : 1;
-  const subcellScaleY = command.options.renderMode === 'braille' ? 4 : 1;
+  const [subcellScaleX, subcellScaleY] =
+    command.options.renderMode === 'tone' ? [1, 1] : SUBCELL_GRID[command.options.renderMode];
   const image = await runtime.loadImage(
     inputPath,
     outputDimensions.width * command.oversample * subcellScaleX,

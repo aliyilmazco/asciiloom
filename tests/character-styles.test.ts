@@ -11,6 +11,7 @@ describe('character style registry', () => {
   it('publishes the stable style identifiers in UI order', () => {
     expect(CHARACTER_STYLES.map(({ id }) => id)).toEqual([
       'readme',
+      'shape',
       'detailed',
       'soft',
       'minimal',

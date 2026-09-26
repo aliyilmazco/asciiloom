@@ -39,7 +39,7 @@ describe('parseCliCommand', () => {
 
   it('rejects unknown and explicitly incompatible style combinations', () => {
     expect(() => parseCliCommand(['photo.png', '--style', 'missing'])).toThrow(
-      'Unknown style "missing". Available styles: readme, detailed, soft, minimal, calibrated, alphanumeric, blocks, blocks-fine, bars, braille, structure.',
+      'Unknown style "missing". Available styles: readme, shape, detailed, soft, minimal, calibrated, alphanumeric, blocks, blocks-fine, bars, braille, structure.',
     );
     expect(() => parseCliCommand(['photo.png', '--style', 'braille', '--ramp', '@ '])).toThrow(
       '--style braille cannot be combined with --ramp.',

@@ -52,6 +52,7 @@ const FORMAT_LABELS: Record<OutputFormat, { copy: string; download: string; hint
 function glyphSummary(options: AsciiOptions): string {
   const style = resolveCharacterStyleId(options);
   if (style === 'braille') return 'Braille 2×4 subcells';
+  if (style === 'shape') return 'Shape match 3×4 regions';
   if (style === 'structure') return 'Structural Unicode';
   return `${Array.from(options.ramp).length} glyph levels`;
 }

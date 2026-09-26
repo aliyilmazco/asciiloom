@@ -63,7 +63,7 @@ describe('validateAsciiOptions', () => {
   it('validates renderer and edge style enums', () => {
     expect(() =>
       validateAsciiOptions({ ...DEFAULT_OPTIONS, renderMode: 'dots' as 'tone' }),
-    ).toThrow('renderMode must be one of: tone, braille.');
+    ).toThrow('renderMode must be one of: tone, braille, shape.');
     expect(() => validateAsciiOptions({ ...DEFAULT_OPTIONS, edgeStyle: 'box' as 'ascii' })).toThrow(
       'edgeStyle must be one of: ascii, unicode.',
     );

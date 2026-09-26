@@ -254,16 +254,17 @@ The renderer intentionally separates image preparation from glyph mapping so the
 8. **Recover local detail:** a 3×3 Gaussian blur creates a local reference; high-frequency information is blended back as an unsharp-detail term.
 9. **Apply tone controls:** contrast, brightness, gamma, and optional inversion.
 10. **Analyze edges:** optional Sobel gradients estimate contour magnitude and orientation; Structural Unicode also derives compatible neighboring stroke connections.
-11. **Render glyphs:** tone values map through a ramp, Braille packs eight binary subcells, and Structural Unicode chooses connected straight, diagonal, corner, T, or cross strokes with a tonal fallback. Dithering remains deterministic.
+11. **Render glyphs:** tone values map through a ramp, Braille packs eight binary subcells, Shape match compares each cell's 3×4 darkness layout with measured ASCII glyph ink layouts and picks the closest glyph, and Structural Unicode chooses connected straight, diagonal, corner, T, or cross strokes with a tonal fallback. Dithering remains deterministic (Shape match does not dither).
 12. **Format safely:** text is emitted directly, wrapped in a collision-safe Markdown fence, or encoded as SVG.
 
 ## Character styles
 
-The browser and `--style` CLI option expose eleven stable styles. Strict ASCII remains the default; Unicode styles are opt-in and their exact appearance depends on the viewer's font.
+The browser and `--style` CLI option expose twelve stable styles. Strict ASCII remains the default; Unicode styles are opt-in and their exact appearance depends on the viewer's font. For output that looks most like the source image, use `shape`.
 
 | ID             | Portability  | Renderer model                       | Intended use                                     |
 | -------------- | ------------ | ------------------------------------ | ------------------------------------------------ |
 | `readme`       | Strict ASCII | 10-level tone ramp                   | Portable general-purpose README artwork          |
+| `shape`        | Strict ASCII | 3×4 glyph-shape matching per cell    | Closest likeness: outlines, diagonals, curves    |
 | `detailed`     | Strict ASCII | Long tone ramp                       | Faces, textures, and smooth tonal transitions    |
 | `soft`         | Strict ASCII | Gentle tone ramp                     | Light gradients and restrained texture           |
 | `minimal`      | Strict ASCII | Short tone ramp                      | Bold silhouettes, icons, and line drawings       |

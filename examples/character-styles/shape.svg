@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="649" height="405" viewBox="0 0 649 405" role="img" aria-labelledby="ascii-art-title">
+  <title id="ascii-art-title">demo-source rendered as ASCII art</title>
+  <rect width="100%" height="100%" rx="6" fill="#ffffff"/>
+  <text xml:space="preserve" fill="#24292f" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace" font-size="14" font-weight="400">
+    <tspan x="12" y="26.00"> </tspan>
+    <tspan x="12" y="42.52">                                                                  ````--</tspan>
+    <tspan x="12" y="59.04">                                                            ````--------</tspan>
+    <tspan x="12" y="75.56">                                                   _gggggg_`------------</tspan>
+    <tspan x="12" y="92.08">      _pwPP&quot;&quot;77777PPmwwg__________gwP           `_gB@@@@@@@g_-----------</tspan>
+    <tspan x="12" y="108.60">                         ``77777`         `````-`@@@@@@@@@@@@_----------</tspan>
+    <tspan x="12" y="125.12">                                     ````-------`B@@@@@@@@@@@E----------</tspan>
+    <tspan x="12" y="141.64">                               ````--------------3@@@@@@@@@@B-------~~~~</tspan>
+    <tspan x="12" y="158.16">                         `````--------------------3B@@@@@@BE\-~~~~~~~~~~</tspan>
+    <tspan x="12" y="174.68">                   `````----------------------------ZZPPF7-~~~~~~~~~~~~~</tspan>
+    <tspan x="12" y="191.20">                  `----------------------gg-------~~~~~~~~~~~~~~~~~~~~~~</tspan>
+    <tspan x="12" y="207.72">       ````g@_     `-------------------_gBBg_~~~~~~~~~~~~~~~~~~~~~~~~~~~</tspan>
+    <tspan x="12" y="224.24">  ````---_gBB@_  _gg__----------------g@BBBBBg~~~~~~~~~~~~~~~~~~~~~====_</tspan>
+    <tspan x="12" y="240.76">--------g@BBBBB_gBBBBBg_---------~~~_gBBBBBBBBg_~~~~~~~~~~~~~~=======_g@</tspan>
+    <tspan x="12" y="257.28">------_gBBBBBBBBBBBBBBBg_--~~~~~~~-g@BBBBBBBBBBBg~~~~~~~=========ZZgg@BB</tspan>
+    <tspan x="12" y="273.80">-----g@BBBBBBBBBBBBBBBBBBg~~~~~~~g@BBBBBBBBBBBBBBgg========ZZZZZZgg@BBBB</tspan>
+    <tspan x="12" y="290.32">---_gBBBBBBBBBBBBBBBBBBBBBg_~~~_gBBBBBBBBBBBBBBBBBBg_ZZZZZZZZZZggBBBBBBB</tspan>
+    <tspan x="12" y="306.84">--_@BBBBBBBBBBBBBBBBBBBBBBB@p~g@BBBBBBBBBBBBBBBBBBBB@gZZZZZZZggBBBBBBBBB</tspan>
+    <tspan x="12" y="323.36">-g@BBBBBBBBBBBBBBBBBBBBBBBBBBgBBBBBBBBBBBBBBBBBBBBBBBBgpZZZggBBBBBBBBBBB</tspan>
+    <tspan x="12" y="339.88">gBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBgggBBBBBBBBBBBBB</tspan>
+    <tspan x="12" y="356.40">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB</tspan>
+    <tspan x="12" y="372.92">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB</tspan>
+    <tspan x="12" y="389.44">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB</tspan>
+  </text>
+</svg>

@@ -121,6 +121,7 @@ test('uses every new style through upload, copy, download, and saved-preset work
   await expect(page.locator('#status')).toHaveText('Ready');
 
   const styles = [
+    { option: 'Shape match', id: 'shape', meta: 'Shape match 3×4 regions' },
     { option: 'Fine blocks', id: 'blocks-fine', meta: '9 glyph levels' },
     { option: 'Braille subcells', id: 'braille', meta: 'Braille 2×4 subcells' },
     { option: 'Structural Unicode', id: 'structure', meta: 'Structural Unicode' },

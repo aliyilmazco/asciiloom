@@ -1,7 +1,8 @@
 import type { AsciiOptions, ConversionResult, DitherMode, RgbColor, RgbaImage } from './types.js';
 import { renderBrailleCells } from './braille.js';
+import { renderShapeCells } from './shape.js';
 import { renderStructuralCharacters, type EdgeField } from './structure.js';
-import { resolveOutputDimensions, validateAsciiOptions } from './validation.js';
+import { resolveOutputDimensions, SUBCELL_GRID, validateAsciiOptions } from './validation.js';
 
 const EPSILON = 1e-9;
 const EDGE_MIDTONE_MIN = 0.06;
@@ -372,24 +373,24 @@ function renderCharacters(
   return lines.join('\n');
 }
 
-function averageBrailleSubcells(
+function averageSubcells(
   subcells: Float64Array,
   outputWidth: number,
   outputHeight: number,
+  scaleX: number,
+  scaleY: number,
 ): Float64Array {
-  const subcellWidth = outputWidth * 2;
+  const subcellWidth = outputWidth * scaleX;
   const output = new Float64Array(outputWidth * outputHeight);
   for (let cellY = 0; cellY < outputHeight; cellY += 1) {
     for (let cellX = 0; cellX < outputWidth; cellX += 1) {
       let sum = 0;
-      for (let dotY = 0; dotY < 4; dotY += 1) {
-        for (let dotX = 0; dotX < 2; dotX += 1) {
-          const x = cellX * 2 + dotX;
-          const y = cellY * 4 + dotY;
-          sum += subcells[y * subcellWidth + x] ?? 0;
+      for (let dotY = 0; dotY < scaleY; dotY += 1) {
+        for (let dotX = 0; dotX < scaleX; dotX += 1) {
+          sum += subcells[(cellY * scaleY + dotY) * subcellWidth + cellX * scaleX + dotX] ?? 0;
         }
       }
-      output[cellY * outputWidth + cellX] = sum / 8;
+      output[cellY * outputWidth + cellX] = sum / (scaleX * scaleY);
     }
   }
   return output;
@@ -410,9 +411,10 @@ export function convertRgbaToAscii(
     outputHeight,
   );
 
-  if (options.renderMode === 'braille') {
-    const subcellWidth = dimensions.width * 2;
-    const subcellHeight = dimensions.height * 4;
+  if (options.renderMode !== 'tone') {
+    const [scaleX, scaleY] = SUBCELL_GRID[options.renderMode];
+    const subcellWidth = dimensions.width * scaleX;
+    const subcellHeight = dimensions.height * scaleY;
     const subcellSampled = downsampleToCells(
       image,
       channels,
@@ -426,23 +428,31 @@ export function convertRgbaToAscii(
       subcellHeight,
       options,
     );
-    const subcellIndices = mapToRampIndices(
-      subcellProcessed,
-      subcellWidth,
-      subcellHeight,
-      2,
-      options.dither,
-    );
+    const art =
+      options.renderMode === 'braille'
+        ? renderBrailleCells(
+            mapToRampIndices(subcellProcessed, subcellWidth, subcellHeight, 2, options.dither),
+            dimensions.width,
+            dimensions.height,
+            options.trimLineEnds,
+          )
+        : renderShapeCells(
+            subcellProcessed,
+            dimensions.width,
+            dimensions.height,
+            options.trimLineEnds,
+          );
     return {
-      art: renderBrailleCells(
-        subcellIndices,
-        dimensions.width,
-        dimensions.height,
-        options.trimLineEnds,
-      ),
+      art,
       width: dimensions.width,
       height: dimensions.height,
-      values: averageBrailleSubcells(subcellProcessed, dimensions.width, dimensions.height),
+      values: averageSubcells(
+        subcellProcessed,
+        dimensions.width,
+        dimensions.height,
+        scaleX,
+        scaleY,
+      ),
     };
   }
 

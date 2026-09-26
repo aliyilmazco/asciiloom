@@ -74,6 +74,23 @@ describe('relativeLuminance', () => {
 });
 
 describe('convertRgbaToAscii', () => {
+  it('matches glyph shapes to the dark layout inside each cell', () => {
+    // Three 3×4-pixel cells: dark bottom row, rising diagonal, blank. Strokes are half-dark like a
+    // thin line averaged into a region, matching real glyph stroke coverage.
+    const dark = [
+      ['...', '...', '...', '###'],
+      ['..#', '.#.', '.#.', '#..'],
+      ['...', '...', '...', '...'],
+    ];
+    const image = grayscaleImage(9, 4, (x, y) =>
+      dark[Math.floor(x / 3)]![y]![x % 3] === '#' ? byteForLightness(0.5) : 255,
+    );
+
+    const result = convertRgbaToAscii(image, options({ width: 3, renderMode: 'shape' }), 1);
+
+    expect(result.art).toBe('_/ ');
+  });
+
   it('spreads an evenly perceived grey gradient across every Fine Blocks level', () => {
     const image = grayscaleImage(9, 1, (x) => byteForLightness(x / 8));
     const result = convertRgbaToAscii(
