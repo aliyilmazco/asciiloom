@@ -1,8 +1,16 @@
-import type { AsciiOptions, ConversionResult, DitherMode, RgbColor, RgbaImage } from './types.js';
+import type {
+  AsciiOptions,
+  ConversionResult,
+  DitherMode,
+  GlyphQuantizer,
+  RgbColor,
+  RgbaImage,
+} from './types.js';
+import { blockGlyphInk, createFillQuantizer, fillEdge } from './blocks.js';
 import { renderBrailleCells } from './braille.js';
-import { renderShapeCells } from './shape.js';
+import { ASCII_GLYPH_INK, createShapeQuantizer, SHAPE_GLYPHS } from './shape.js';
 import { renderStructuralCharacters, type EdgeField } from './structure.js';
-import { resolveOutputDimensions, SUBCELL_GRID, validateAsciiOptions } from './validation.js';
+import { resolveOutputDimensions, subcellGrid, validateAsciiOptions } from './validation.js';
 
 const EPSILON = 1e-9;
 const EDGE_MIDTONE_MIN = 0.06;
@@ -229,9 +237,51 @@ function applyToneAndDetail(
   return output;
 }
 
-function quantize(value: number, levels: number): { index: number; value: number } {
-  const index = Math.round(clamp(value) * (levels - 1));
-  return { index, value: index / (levels - 1) };
+function levelQuantizer(lightness: Float64Array): GlyphQuantizer {
+  // oxlint-disable-next-line unicorn/no-array-sort -- Uint32Array.from creates the private scratch array we intentionally sort in place.
+  const order = Uint32Array.from(lightness.keys()).sort(
+    (a, b) => (lightness[a] ?? 0) - (lightness[b] ?? 0),
+  );
+  const sorted = Float64Array.from(order, (index) => lightness[index] ?? 0);
+  const last = sorted.length - 1;
+  return {
+    lightness,
+    pick(value, _cell, bias) {
+      if (value <= (sorted[0] ?? 0)) return order[0] ?? 0;
+      if (value >= (sorted[last] ?? 1)) return order[last] ?? 0;
+      let darker = 0;
+      let lighter = last;
+      while (lighter - darker > 1) {
+        const middle = (darker + lighter) >> 1;
+        if ((sorted[middle] ?? 0) <= value) darker = middle;
+        else lighter = middle;
+      }
+      const low = sorted[darker] ?? 0;
+      const span = (sorted[lighter] ?? 1) - low;
+      const position = span < EPSILON ? 0 : (value - low) / span;
+      return (position + bias >= 0.5 ? order[lighter] : order[darker]) ?? 0;
+    },
+  };
+}
+
+// Each glyph renders the lightness its measured ink implies, rescaled so the ramp's inkiest glyph
+// is black and its emptiest is white. Ramps are not evenly spaced in ink (and community ramps are
+// not even monotonic), so quantizing by ramp position would distort the image's tones.
+function rampLightness(characters: readonly string[]): Float64Array {
+  const ink = Float64Array.from(
+    characters,
+    (character) => ASCII_GLYPH_INK[character] ?? blockGlyphInk(character) ?? Number.NaN,
+  );
+  let darkest = -Infinity;
+  let lightest = Infinity;
+  for (const value of ink) {
+    darkest = Math.max(darkest, value);
+    lightest = Math.min(lightest, value);
+  }
+  if (Number.isNaN(darkest) || darkest - lightest < EPSILON) {
+    return Float64Array.from(characters, (_, index) => index / (characters.length - 1));
+  }
+  return ink.map((value) => (darkest - value) / (darkest - lightest));
 }
 
 function addError(
@@ -251,7 +301,7 @@ function errorDiffuse(
   source: Float64Array,
   width: number,
   height: number,
-  levels: number,
+  quantizer: GlyphQuantizer,
   mode: Extract<DitherMode, 'floyd-steinberg' | 'atkinson'>,
 ): Uint16Array {
   const work = new Float64Array(source);
@@ -266,9 +316,9 @@ function errorDiffuse(
     for (let x = start; x !== end; x += step) {
       const index = y * width + x;
       const oldValue = work[index] ?? 0;
-      const mapped = quantize(oldValue, levels);
-      indices[index] = mapped.index;
-      const error = oldValue - mapped.value;
+      const glyph = quantizer.pick(oldValue, index, 0);
+      indices[index] = glyph;
+      const error = oldValue - (quantizer.lightness[glyph] ?? 0);
       const direction = reverse ? -1 : 1;
 
       if (mode === 'floyd-steinberg') {
@@ -297,23 +347,20 @@ function mapToRampIndices(
   values: Float64Array,
   width: number,
   height: number,
-  levels: number,
+  quantizer: GlyphQuantizer,
   mode: DitherMode,
 ): Uint16Array {
   if (mode === 'floyd-steinberg' || mode === 'atkinson') {
-    return errorDiffuse(values, width, height, levels, mode);
+    return errorDiffuse(values, width, height, quantizer, mode);
   }
 
   const output = new Uint16Array(values.length);
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const index = y * width + x;
-      let value = values[index] ?? 0;
-      if (mode === 'bayer') {
-        const threshold = ((BAYER_4X4[(y % 4) * 4 + (x % 4)] ?? 0) + 0.5) / 16 - 0.5;
-        value += threshold / Math.max(1, levels - 1);
-      }
-      output[index] = quantize(value, levels).index;
+      const bias =
+        mode === 'bayer' ? ((BAYER_4X4[(y % 4) * 4 + (x % 4)] ?? 0) + 0.5) / 16 - 0.5 : 0;
+      output[index] = quantizer.pick(values[index] ?? 0, index, bias);
     }
   }
   return output;
@@ -332,12 +379,12 @@ function edgeCharacter(normalAngle: number): string {
 
 function renderCharacters(
   indices: Uint16Array,
+  characters: readonly string[],
   values: Float64Array,
   width: number,
   height: number,
   options: AsciiOptions,
 ): string {
-  const characters = Array.from(options.ramp);
   const edges = options.edgeGlyphs ? sobelEdges(values, width, height) : null;
   if (edges && options.edgeStyle === 'unicode') {
     return renderStructuralCharacters({
@@ -403,79 +450,56 @@ export function convertRgbaToAscii(
 ): ConversionResult {
   validateAsciiOptions(options);
   const channels = validateImage(image);
-  const dimensions = resolveOutputDimensions(
+  const { width, height } = resolveOutputDimensions(
     image.width,
     image.height,
     options.width,
     options.cellAspectRatio,
     outputHeight,
   );
+  const [scaleX, scaleY] = subcellGrid(options);
+  const fieldWidth = width * scaleX;
+  const fieldHeight = height * scaleY;
+  const field = applyToneAndDetail(
+    downsampleToCells(image, channels, fieldWidth, fieldHeight, options.background),
+    fieldWidth,
+    fieldHeight,
+    options,
+  );
+  const values =
+    scaleX * scaleY === 1 ? field : averageSubcells(field, width, height, scaleX, scaleY);
 
-  if (options.renderMode !== 'tone') {
-    const [scaleX, scaleY] = SUBCELL_GRID[options.renderMode];
-    const subcellWidth = dimensions.width * scaleX;
-    const subcellHeight = dimensions.height * scaleY;
-    const subcellSampled = downsampleToCells(
-      image,
-      channels,
-      subcellWidth,
-      subcellHeight,
-      options.background,
+  if (options.renderMode === 'braille') {
+    const dots = levelQuantizer(Float64Array.of(0, 1));
+    const art = renderBrailleCells(
+      mapToRampIndices(field, fieldWidth, fieldHeight, dots, options.dither),
+      width,
+      height,
+      options.trimLineEnds,
     );
-    const subcellProcessed = applyToneAndDetail(
-      subcellSampled,
-      subcellWidth,
-      subcellHeight,
-      options,
-    );
-    const art =
-      options.renderMode === 'braille'
-        ? renderBrailleCells(
-            mapToRampIndices(subcellProcessed, subcellWidth, subcellHeight, 2, options.dither),
-            dimensions.width,
-            dimensions.height,
-            options.trimLineEnds,
-          )
-        : renderShapeCells(
-            subcellProcessed,
-            dimensions.width,
-            dimensions.height,
-            options.trimLineEnds,
-          );
-    return {
-      art,
-      width: dimensions.width,
-      height: dimensions.height,
-      values: averageSubcells(
-        subcellProcessed,
-        dimensions.width,
-        dimensions.height,
-        scaleX,
-        scaleY,
-      ),
-    };
+    return { art, width, height, values };
   }
 
-  const sampled = downsampleToCells(
-    image,
-    channels,
-    dimensions.width,
-    dimensions.height,
-    options.background,
+  let characters: readonly string[];
+  let quantizer: GlyphQuantizer;
+  if (options.renderMode === 'shape') {
+    characters = SHAPE_GLYPHS;
+    quantizer = createShapeQuantizer(field, width);
+  } else {
+    characters = Array.from(options.ramp);
+    const edge = fillEdge(characters);
+    quantizer =
+      edge === undefined
+        ? levelQuantizer(rampLightness(characters))
+        : createFillQuantizer(characters, edge, field, width);
+  }
+  const art = renderCharacters(
+    mapToRampIndices(values, width, height, quantizer, options.dither),
+    characters,
+    values,
+    width,
+    height,
+    options,
   );
-  const processed = applyToneAndDetail(sampled, dimensions.width, dimensions.height, options);
-  const indices = mapToRampIndices(
-    processed,
-    dimensions.width,
-    dimensions.height,
-    Array.from(options.ramp).length,
-    options.dither,
-  );
-
-  return {
-    art: renderCharacters(indices, processed, dimensions.width, dimensions.height, options),
-    width: dimensions.width,
-    height: dimensions.height,
-    values: processed,
-  };
+  return { art, width, height, values };
 }

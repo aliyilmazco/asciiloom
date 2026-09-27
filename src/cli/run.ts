@@ -4,7 +4,7 @@ import { convertRgbaToAscii } from '../core/ascii.js';
 import { toMarkdown } from '../core/markdown.js';
 import { assertXmlText, toSvg } from '../core/svg.js';
 import type { RgbaImage } from '../core/types.js';
-import { resolveOutputDimensions, SUBCELL_GRID } from '../core/validation.js';
+import { resolveOutputDimensions, subcellGrid } from '../core/validation.js';
 
 export const CLI_HELP = `
 Charosaic CLI
@@ -152,8 +152,7 @@ export async function runCli(args: readonly string[], runtime: CliRuntime): Prom
     );
   }
 
-  const [subcellScaleX, subcellScaleY] =
-    command.options.renderMode === 'tone' ? [1, 1] : SUBCELL_GRID[command.options.renderMode];
+  const [subcellScaleX, subcellScaleY] = subcellGrid(command.options);
   const image = await runtime.loadImage(
     inputPath,
     outputDimensions.width * command.oversample * subcellScaleX,

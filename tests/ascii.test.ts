@@ -106,6 +106,31 @@ describe('convertRgbaToAscii', () => {
     expect(Array.from(result.art)).toEqual(['█', '▉', '▊', '▋', '▌', '▍', '▎', '▏', ' ']);
   });
 
+  it('places partial blocks only on the side of the cell where the ink lies', () => {
+    const mid = byteForLightness(0.5);
+    // Cells: ink on the glyphs' fill edge, ink on the opposite edge, flat mid grey.
+    const bars = grayscaleImage(3, 8, (x, y) => [y >= 4 ? 0 : 255, y < 4 ? 0 : 255, mid][x]!);
+    const fine = grayscaleImage(24, 1, (x) => {
+      const strip = x % 8;
+      return [strip < 4 ? 0 : 255, strip >= 4 ? 0 : 255, mid][Math.floor(x / 8)]!;
+    });
+
+    expect(convertRgbaToAscii(bars, options({ width: 3, ramp: RAMPS.bars }), 1).art).toMatch(
+      /^▄[█ ]▄$/u,
+    );
+    expect(
+      convertRgbaToAscii(fine, options({ width: 3, ramp: RAMPS['blocks-fine'] }), 1).art,
+    ).toMatch(/^▌[█ ]▌$/u);
+  });
+
+  it('maps tones by measured glyph ink, so ramp order does not change the image', () => {
+    const image = grayscaleImage(32, 1, (x) => Math.round((x / 31) * 255));
+    const render = (ramp: string) =>
+      convertRgbaToAscii(image, options({ width: 32, ramp, dither: 'atkinson' }), 1).art;
+
+    expect(render(RAMPS.classic)).toBe(render(RAMPS.readme));
+  });
+
   it('renders true 2×4 Braille subcells and averages them into text-cell values', () => {
     const result = convertRgbaToAscii(
       grayscaleImage(4, 4, () => 0),
@@ -341,7 +366,8 @@ describe('convertRgbaToAscii', () => {
       expect.closeTo((lightnessOfByte(128) - low) / (high - low), 9),
       1,
     ]);
-    expect(result.art).toBe('@@# ');
+    // Measured ink puts '#' (0.11) darker than '%' (0.31) despite its ramp position.
+    expect(result.art).toBe('@#  ');
   });
 
   it('leaves local luminance unchanged when detail recovery is disabled', () => {

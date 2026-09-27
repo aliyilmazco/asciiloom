@@ -19,6 +19,9 @@ All notable changes to Charosaic are recorded here.
 
 - Every style now keeps the source image's proportions: the browser preview and SVG export space rows one em apart and size each cell to the configured cell aspect, and SVG rows are pinned to that grid with `textLength`. Previously the preview squashed art to ~60% of its height (the 960×600 demo showed at 0.39 height/width instead of 0.63) and row gaps split block glyphs into stripes. `SvgOptions.lineHeight` is replaced by `cellAspectRatio`.
 - Braille output uses U+2800 for empty cells instead of ASCII spaces, which rendered in a different-width font and shifted dots out of column on every row.
+- `bars` and `blocks-fine` place partial blocks from where ink sits inside each cell (8 sub-strips), not the cell average alone, so edges no longer stair-step or appear on the wrong side of the cell.
+- Tone ramps quantize against each glyph's measured ink instead of its ramp position, so uneven or non-monotonic ramps (`classic`, `jp2a`, `bubbles`, `matrix`) render the same tones as the source.
+- `shape` diffuses tone error between cells, so smooth gradients render as texture instead of flat bands.
 - Wide Braille renders in the browser no longer fail the prepared-canvas pixel limit.
 - Dependency audit: `sharp` 0.35.4 and `vitest` 4.1.11.
 

@@ -1,3 +1,5 @@
+import type { GlyphQuantizer } from './types.js';
+
 // Ink coverage of each printable ASCII glyph in a 3×4 grid of regions (row-major, top row first),
 // averaged over Menlo, SF Mono, and Courier New and scaled so the densest region is 1000.
 // Measured once from rasterized glyphs; regenerate only if the region grid changes.
@@ -99,47 +101,65 @@ const GLYPH_COVERAGE: ReadonlyArray<readonly [string, readonly number[]]> = [
   ['~', [0, 0, 0, 193, 156, 69, 219, 340, 346, 0, 0, 0]],
 ];
 
-export const SHAPE_REGIONS_X = 3;
-export const SHAPE_REGIONS_Y = 4;
+const SHAPE_REGIONS_X = 3;
+const SHAPE_REGIONS_Y = 4;
 const REGION_COUNT = SHAPE_REGIONS_X * SHAPE_REGIONS_Y;
+// Shape glyphs have no uniform tone step; an ordered-dither offset spans an eighth of the range.
+const ORDERED_DITHER_STEP = 1 / 8;
 
-const GLYPHS = GLYPH_COVERAGE.map(([character]) => character);
+export const SHAPE_GLYPHS: readonly string[] = GLYPH_COVERAGE.map(([character]) => character);
 const VECTORS = Float64Array.from(
   GLYPH_COVERAGE.flatMap(([, coverage]) => coverage),
   (v) => v / 1000,
 );
 
+/** Mean measured ink coverage of each printable ASCII glyph. */
+export const ASCII_GLYPH_INK: Readonly<Record<string, number>> = Object.fromEntries(
+  GLYPH_COVERAGE.map(([character, coverage]) => [
+    character,
+    coverage.reduce((sum, region) => sum + region, 0) / (REGION_COUNT * 1000),
+  ]),
+);
+const DENSEST_INK = Math.max(...Object.values(ASCII_GLYPH_INK));
+
 /**
  * Picks, for each character cell, the ASCII glyph whose ink layout is closest (least squares) to
  * the cell's 3×4 darkness pattern, so contours and diagonals are drawn with matching glyph shapes.
- * `values` holds lightness (0 dark … 1 light) on a (width·3)×(height·4) region grid.
+ * The pattern is shifted by the dithered tone error so gradients diffuse into texture instead of
+ * banding; a glyph's tone is its mean ink relative to the densest glyph. `field` holds lightness
+ * (0 dark … 1 light) on the (width·3)×(height·4) region grid.
  */
-export function renderShapeCells(
-  values: Float64Array,
-  width: number,
-  height: number,
-  trimLineEnds: boolean,
-): string {
+export function createShapeQuantizer(field: Float64Array, width: number): GlyphQuantizer {
   const regionWidth = width * SHAPE_REGIONS_X;
-  if (values.length !== regionWidth * height * SHAPE_REGIONS_Y) {
-    throw new RangeError('Shape region field must contain width × 3 × height × 4 entries.');
-  }
-
+  const lightness = Float64Array.from(
+    SHAPE_GLYPHS,
+    (character) => 1 - (ASCII_GLYPH_INK[character] ?? 0) / DENSEST_INK,
+  );
+  const regions = new Float64Array(REGION_COUNT);
   const target = new Float64Array(REGION_COUNT);
-  const lines: string[] = [];
-  for (let cellY = 0; cellY < height; cellY += 1) {
-    let line = '';
-    for (let cellX = 0; cellX < width; cellX += 1) {
+
+  return {
+    lightness,
+    pick(value, cell, bias) {
+      const cellX = cell % width;
+      const cellY = (cell - cellX) / width;
+      let mean = 0;
       for (let ry = 0; ry < SHAPE_REGIONS_Y; ry += 1) {
         const row = (cellY * SHAPE_REGIONS_Y + ry) * regionWidth + cellX * SHAPE_REGIONS_X;
         for (let rx = 0; rx < SHAPE_REGIONS_X; rx += 1) {
-          target[ry * SHAPE_REGIONS_X + rx] = 1 - (values[row + rx] ?? 1);
+          const region = field[row + rx] ?? 1;
+          regions[ry * SHAPE_REGIONS_X + rx] = region;
+          mean += region;
         }
+      }
+      const shift = value + bias * ORDERED_DITHER_STEP - mean / REGION_COUNT;
+      for (let region = 0; region < REGION_COUNT; region += 1) {
+        target[region] = Math.min(1, Math.max(0, 1 - (regions[region] ?? 1) - shift));
       }
 
       let best = 0;
       let bestDistance = Infinity;
-      for (let glyph = 0; glyph < GLYPHS.length; glyph += 1) {
+      for (let glyph = 0; glyph < SHAPE_GLYPHS.length; glyph += 1) {
         let distance = 0;
         const base = glyph * REGION_COUNT;
         for (let region = 0; region < REGION_COUNT; region += 1) {
@@ -151,9 +171,7 @@ export function renderShapeCells(
           best = glyph;
         }
       }
-      line += GLYPHS[best] ?? ' ';
-    }
-    lines.push(trimLineEnds ? line.replace(/ +$/u, '') : line);
-  }
-  return lines.join('\n');
+      return best;
+    },
+  };
 }

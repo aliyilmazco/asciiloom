@@ -1,3 +1,4 @@
+import { FILL_GRID, fillEdge } from './blocks.js';
 import type { AsciiOptions, DitherMode, EdgeStyle, RenderMode, RgbColor } from './types.js';
 
 export const MAX_OUTPUT_WIDTH = 400;
@@ -12,12 +13,23 @@ export const DITHER_MODES = [
   'bayer',
 ] as const satisfies readonly DitherMode[];
 export const RENDER_MODES = ['tone', 'braille', 'shape'] as const satisfies readonly RenderMode[];
-/** Subcell samples per character cell (x, y) for modes that look inside a cell. */
-export const SUBCELL_GRID = {
+const SUBCELL_GRID = {
   braille: [2, 4],
   shape: [3, 4],
 } as const satisfies Record<Exclude<RenderMode, 'tone'>, readonly [number, number]>;
 export const EDGE_STYLES = ['ascii', 'unicode'] as const satisfies readonly EdgeStyle[];
+
+/**
+ * Subcell samples per character cell (x, y) the renderer reads: braille dots, shape regions, or
+ * the strips of edge-filling block ramps; tone ramps read one sample per cell.
+ */
+export function subcellGrid(
+  options: Pick<AsciiOptions, 'renderMode' | 'ramp'>,
+): readonly [number, number] {
+  if (options.renderMode !== 'tone') return SUBCELL_GRID[options.renderMode];
+  const edge = fillEdge(Array.from(options.ramp));
+  return edge === undefined ? [1, 1] : FILL_GRID[edge];
+}
 
 export interface OutputDimensions {
   width: number;

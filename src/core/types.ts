@@ -44,6 +44,14 @@ export interface ConversionResult {
   values: Float64Array;
 }
 
+/** Maps a cell's dithered lightness to a ramp glyph. */
+export interface GlyphQuantizer {
+  /** Lightness (0 dark … 1 light) each ramp glyph renders. */
+  readonly lightness: Float64Array;
+  /** Ramp index for cell `cell` at lightness `value`; `bias` is an ordered-dither offset in glyph steps. */
+  pick(value: number, cell: number, bias: number): number;
+}
+
 export interface MarkdownOptions {
   language?: string;
   collapsible?: boolean;
