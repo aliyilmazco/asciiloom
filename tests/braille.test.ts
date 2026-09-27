@@ -19,24 +19,26 @@ describe('Braille cell renderer', () => {
     expect(renderBrailleCells(subcells, 1, 1, false)).toBe(String.fromCodePoint(0x2800 + mask));
   });
 
-  it('uses ASCII space for empty cells and U+28FF for full cells', () => {
-    expect(renderBrailleCells(new Uint16Array(8).fill(1), 1, 1, false)).toBe(' ');
+  it('keeps empty cells in the Braille font with U+2800 and fills full cells with U+28FF', () => {
+    const leadingBlank = new Uint16Array(16).fill(1);
+    leadingBlank[2] = 0;
+    expect(renderBrailleCells(leadingBlank, 2, 1, true)).toBe('\u2800⠁');
     expect(renderBrailleCells(new Uint16Array(8), 1, 1, false)).toBe('⣿');
   });
 
-  it('emits only ASCII whitespace or assigned Braille scalars', () => {
+  it('emits only Braille pattern scalars', () => {
     const art = renderBrailleCells(Uint16Array.from([0, 1, 1, 0, 0, 1, 1, 0]), 1, 1, false);
     for (const character of art) {
       const scalar = character.codePointAt(0)!;
-      expect(character === ' ' || (scalar >= 0x2801 && scalar <= 0x28ff)).toBe(true);
+      expect(scalar >= 0x2800 && scalar <= 0x28ff).toBe(true);
     }
   });
 
-  it('preserves output dimensions and trims only trailing ASCII spaces', () => {
+  it('preserves output dimensions and trims only trailing blank cells', () => {
     const subcells = new Uint16Array(4 * 8).fill(1);
     subcells[0] = 0;
     subcells[4 * 4] = 0;
-    expect(renderBrailleCells(subcells, 2, 2, false).split('\n')).toEqual(['⠁ ', '⠁ ']);
+    expect(renderBrailleCells(subcells, 2, 2, false).split('\n')).toEqual(['⠁\u2800', '⠁\u2800']);
     expect(renderBrailleCells(subcells, 2, 2, true).split('\n')).toEqual(['⠁', '⠁']);
   });
 

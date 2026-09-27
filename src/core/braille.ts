@@ -34,9 +34,11 @@ export function renderBrailleCells(
           }
         }
       }
-      line += mask === 0 ? ' ' : String.fromCodePoint(BRAILLE_BASE + mask);
+      // U+2800 (blank pattern) keeps every cell in the Braille font; ASCII spaces come from the
+      // monospace font, whose advance differs, and would shift the dots on each row.
+      line += String.fromCodePoint(BRAILLE_BASE + mask);
     }
-    lines.push(trimLineEnds ? line.replace(/ +$/u, '') : line);
+    lines.push(trimLineEnds ? line.replace(/\u2800+$/u, '') : line);
   }
   return lines.join('\n');
 }
