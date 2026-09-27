@@ -58,8 +58,8 @@ describe('toSvg', () => {
     expect(() => toSvg('art', { fontSize: Number.POSITIVE_INFINITY })).toThrow(
       'fontSize must be a finite number greater than 0.',
     );
-    expect(() => toSvg('art', { lineHeight: 0 })).toThrow(
-      'lineHeight must be a finite number greater than 0.',
+    expect(() => toSvg('art', { cellAspectRatio: 0 })).toThrow(
+      'cellAspectRatio must be a finite number greater than 0.',
     );
     expect(() => toSvg('art', { padding: -1 })).toThrow(
       'padding must be a finite number greater than or equal to 0.',
@@ -69,21 +69,25 @@ describe('toSvg', () => {
     );
   });
 
-  it('keeps compressed-line-height text baselines inside the SVG canvas', () => {
-    const output = toSvg('A\nB', { fontSize: 100, lineHeight: 0.01, padding: 0 });
-    const heightMatch = output.match(/<svg[^>]* height="([\d.]+)"/u);
-    const baselines = Array.from(output.matchAll(/<tspan[^>]* y="([\d.]+)"/gu), (match) =>
-      Number(match[1]),
+  it('pins every row to a grid of cells with the converted aspect', () => {
+    const output = toSvg(`${'x'.repeat(100)}\n⣿⣿`, {
+      fontSize: 10,
+      padding: 0,
+      cellAspectRatio: 0.4,
+    });
+    const cellWidth = Number(output.match(/<svg[^>]* width="([\d.]+)"/u)?.[1]) / 100;
+    const rows = Array.from(
+      output.matchAll(/<tspan[^>]* y="([\d.]+)" textLength="([\d.]+)"/gu),
+      (match) => ({ y: Number(match[1]), length: Number(match[2]) }),
     );
 
-    expect(heightMatch).not.toBeNull();
-    expect(baselines).toHaveLength(2);
-    expect(Number(heightMatch?.[1])).toBeGreaterThan(Math.max(...baselines));
+    expect(cellWidth / (rows[1]!.y - rows[0]!.y)).toBeCloseTo(0.4, 2);
+    expect(rows.map(({ length }) => length / cellWidth)).toEqual([100, 2]);
   });
 
   it('rejects calculated SVG axes above the safety limit', () => {
     expect(() => toSvg('x'.repeat(6000))).toThrow('SVG width must not exceed 32768 pixels.');
-    expect(() => toSvg('x\n'.repeat(2000))).toThrow('SVG height must not exceed 32768 pixels.');
+    expect(() => toSvg('x\n'.repeat(2400))).toThrow('SVG height must not exceed 32768 pixels.');
   });
 
   it('rejects XML 1.0 control characters before producing malformed SVG', () => {

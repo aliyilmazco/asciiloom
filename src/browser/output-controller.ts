@@ -1,6 +1,7 @@
 import type { AsciiOptions, OutputFormat } from '../core/types.js';
 import { resolveCharacterStyleId } from '../core/character-styles.js';
 import { toMarkdown } from '../core/markdown.js';
+import { displayCellWidth } from '../core/svg.js';
 import { createCopiedFeedback } from './copied-feedback.js';
 import { copyText, downloadGenerated, generatedOutputs, type GeneratedOutputs } from './output.js';
 
@@ -89,6 +90,26 @@ export function createOutputController(
   let copyRevision = 0;
   let disposed = false;
 
+  // CSS fits cells from the monospace advance (1ch). Glyphs the font lacks (Braille) fall back to
+  // fonts with other advances, so fit from the advance the rendered text actually has. The advance
+  // is stored in em so it stays correct when a media query changes the preview's font size.
+  function fitPreviewCells(art: string, cellAspectRatio: number): void {
+    asciiPreview.style.setProperty('--cell-aspect', String(cellAspectRatio));
+    asciiPreview.style.removeProperty('--glyph-advance');
+    const cells = art
+      .split('\n')
+      .reduce((maximum, line) => Math.max(maximum, displayCellWidth(line)), 0);
+    const range = document.createRange();
+    range.selectNodeContents(asciiPreview);
+    const width = range.getBoundingClientRect().width;
+    if (cells === 0 || width <= 0) return;
+    const style = window.getComputedStyle(asciiPreview);
+    const fontSize = Number.parseFloat(style.fontSize);
+    if (!(fontSize > 0)) return;
+    const spacing = Number.parseFloat(style.letterSpacing) || 0;
+    asciiPreview.style.setProperty('--glyph-advance', `${(width / cells - spacing) / fontSize}em`);
+  }
+
   function refresh(): void {
     output.value = errorMessage ?? generated[selectedFormat];
     const label = FORMAT_LABELS[selectedFormat];
@@ -166,6 +187,7 @@ export function createOutputController(
       available = true;
       errorMessage = null;
       asciiPreview.textContent = input.art;
+      fitPreviewCells(input.art, input.options.cellAspectRatio);
       resultMeta.textContent = `${input.width} columns × ${input.height} rows · ${glyphSummary(input.options)} · ${input.options.dither}`;
       refresh();
     },
@@ -197,6 +219,8 @@ export function createOutputController(
       outputRevision += 1;
       available = false;
       errorMessage = message;
+      asciiPreview.style.removeProperty('--cell-aspect');
+      asciiPreview.style.removeProperty('--glyph-advance');
       refresh();
       asciiPreview.textContent = message;
     },

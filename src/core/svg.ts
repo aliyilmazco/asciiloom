@@ -81,22 +81,25 @@ export function toSvg(art: string, options: SvgOptions = {}): string {
   assertXmlText('title', suppliedTitle);
   const title = suppliedTitle.trim() || 'ASCII art';
   const fontSize = options.fontSize === undefined ? 14 : options.fontSize;
-  const lineHeight = options.lineHeight === undefined ? 1.18 : options.lineHeight;
+  const cellAspectRatio = options.cellAspectRatio === undefined ? 0.5 : options.cellAspectRatio;
   const padding = options.padding === undefined ? 12 : options.padding;
   const foreground = options.foreground ?? '#24292f';
   const background = options.background === undefined ? '#ffffff' : options.background;
   assertXmlText('foreground', foreground);
   if (background !== null) assertXmlText('background', background);
   assertPositiveMetric('fontSize', fontSize);
-  assertPositiveMetric('lineHeight', lineHeight);
+  assertPositiveMetric('cellAspectRatio', cellAspectRatio);
   assertPadding(padding);
 
   const maxCharacters = lines.reduce(
     (maximum, line) => Math.max(maximum, displayCellWidth(line)),
     1,
   );
-  const characterWidth = fontSize * 0.62;
-  const rowAdvance = fontSize * lineHeight;
+  // Rows are one em apart so block glyphs tile without gaps; each cell is then as wide as the
+  // width ÷ height the art was converted for, and textLength pins every row to that grid even when
+  // a glyph falls back to a font with a different advance.
+  const characterWidth = fontSize * cellAspectRatio;
+  const rowAdvance = fontSize;
   const firstBaseline = padding + fontSize;
   const lastBaseline = firstBaseline + (lines.length - 1) * rowAdvance;
   const width = Math.ceil(maxCharacters * characterWidth + padding * 2);
@@ -115,8 +118,10 @@ export function toSvg(art: string, options: SvgOptions = {}): string {
 
   const tspans = lines
     .map((line, index) => {
+      const text = line || ' ';
       const y = firstBaseline + index * rowAdvance;
-      return `    <tspan x="${padding}" y="${y.toFixed(2)}">${escapeHtml(line || ' ')}</tspan>`;
+      const length = displayCellWidth(text) * characterWidth;
+      return `    <tspan x="${padding}" y="${y.toFixed(2)}" textLength="${length.toFixed(2)}" lengthAdjust="spacing">${escapeHtml(text)}</tspan>`;
     })
     .join('\n');
 
@@ -125,7 +130,7 @@ export function toSvg(art: string, options: SvgOptions = {}): string {
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="${titleId}">`,
     `  <title id="${titleId}">${escapeHtml(title)}</title>`,
     backgroundElement.trimEnd(),
-    `  <text xml:space="preserve" fill="${escapeHtml(foreground)}" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace" font-size="${fontSize}" font-weight="400">`,
+    `  <text xml:space="preserve" fill="${escapeHtml(foreground)}" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', 'Apple Symbols', 'Segoe UI Symbol', monospace" font-size="${fontSize}" font-weight="400">`,
     tspans,
     '  </text>',
     '</svg>',

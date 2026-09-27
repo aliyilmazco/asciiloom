@@ -923,12 +923,18 @@ input[type='range'] {
   padding: 18px;
   color: var(--text);
   font:
-    500 10px/1.04 ui-monospace,
+    500 10px ui-monospace,
     SFMono-Regular,
     Menlo,
     Monaco,
     Consolas,
+    'Apple Symbols',
+    'Segoe UI Symbol',
     monospace;
+  /* One-em rows let block glyphs tile without gaps; letter spacing then fits each cell to the aspect
+     the art was converted for. --glyph-advance is measured when glyphs fall back to other fonts. */
+  line-height: 1;
+  letter-spacing: calc(var(--cell-aspect) * 1em - var(--glyph-advance, 1ch));
   white-space: pre;
 }
 

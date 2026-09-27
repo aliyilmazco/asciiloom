@@ -92,6 +92,7 @@ function outputFor(
   art: string,
   title: string,
   collapsible: boolean,
+  cellAspectRatio: number,
 ): string {
   if (format === 'text') return `${art}\n`;
   if (format === 'markdown') {
@@ -101,7 +102,7 @@ function outputFor(
       summary: title,
     });
   }
-  return toSvg(art, { title: `${title} rendered as ASCII art` });
+  return toSvg(art, { title: `${title} rendered as ASCII art`, cellAspectRatio });
 }
 
 function outputDestinations(command: CliCommand, cwd: string): OutputDestination[] {
@@ -166,6 +167,7 @@ export async function runCli(args: readonly string[], runtime: CliRuntime): Prom
         result.art,
         title,
         command.collapsible,
+        command.options.cellAspectRatio,
       ),
     );
     return;
@@ -174,7 +176,13 @@ export async function runCli(args: readonly string[], runtime: CliRuntime): Prom
   const targets: OutputTarget[] = destinations.map((destination) => ({
     format: destination.format,
     path: destination.path,
-    contents: outputFor(destination.format, result.art, title, command.collapsible),
+    contents: outputFor(
+      destination.format,
+      result.art,
+      title,
+      command.collapsible,
+      command.options.cellAspectRatio,
+    ),
   }));
   await targets.reduce<Promise<void>>(async (previous, target) => {
     await previous;

@@ -25,6 +25,7 @@ export function generatedOutputs(
     markdown: toMarkdown(art, { collapsible, open: true, summary: name }),
     svg: toSvg(art, {
       title: `${name} rendered as ASCII art`,
+      cellAspectRatio: options.cellAspectRatio,
       foreground: options.invert ? '#f0f6fc' : '#24292f',
       background: options.invert ? '#0d1117' : '#ffffff',
     }),

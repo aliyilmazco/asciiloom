@@ -111,6 +111,39 @@ test('keeps the rendered studio inside a 390px mobile viewport', async ({ page }
   expect(browserErrors).toEqual([]);
 });
 
+test('keeps preview cells at the converted aspect when the viewport crosses a font breakpoint', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await openReadyStudio(page);
+
+  // Widest line's rendered width per cell, next to the width the cell aspect asks for.
+  const cellWidths = () =>
+    page.locator('#asciiPreview').evaluate((element) => {
+      const cells = Math.max(
+        ...(element.textContent ?? '').split('\n').map((line) => Array.from(line).length),
+      );
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const style = getComputedStyle(element);
+      return {
+        fontSize: Number.parseFloat(style.fontSize),
+        rendered: range.getBoundingClientRect().width / cells,
+        expected:
+          Number.parseFloat(style.getPropertyValue('--cell-aspect')) *
+          Number.parseFloat(style.fontSize),
+      };
+    });
+
+  const wide = await cellWidths();
+  expect(wide.rendered).toBeCloseTo(wide.expected, 1);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(async () => (await cellWidths()).fontSize).toBeLessThan(wide.fontSize);
+  const narrow = await cellWidths();
+  expect(narrow.rendered).toBeCloseTo(narrow.expected, 1);
+});
+
 test('uses every new style through upload, copy, download, and saved-preset workflows', async ({
   page,
 }) => {

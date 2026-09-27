@@ -54,7 +54,8 @@ export interface MarkdownOptions {
 export interface SvgOptions {
   title?: string;
   fontSize?: number;
-  lineHeight?: number;
+  /** Character cell width ÷ height the art was converted for; sets the row spacing. */
+  cellAspectRatio?: number;
   foreground?: string;
   background?: string | null;
   padding?: number;
