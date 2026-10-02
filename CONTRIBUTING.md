@@ -4,7 +4,7 @@ Thank you for helping improve AsciiLoom. The project keeps the browser studio, C
 
 ## Development setup
 
-Requirements are Node.js `20.19.x` or an even-numbered release from `22.12.x` onward. Install the locked dependency graph with:
+Requirements are Node.js `22.12.x` or a later even-numbered release. Install the locked dependency graph with:
 
 ```bash
 npm ci

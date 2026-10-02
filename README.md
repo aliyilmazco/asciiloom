@@ -37,7 +37,7 @@ AsciiLoom handles those concerns directly rather than adapting a terminal render
 
 ## Quick start: web interface
 
-Requirements: Node.js 20.19.x or an even-numbered Node.js release from 22.12 onward.
+Requirements: Node.js 22.12 or a later even-numbered Node.js release.
 
 ```bash
 npm install
@@ -366,7 +366,7 @@ npm run release:check
 
 `npm run test:e2e` builds the production web app, installs the Playwright-managed Chromium build when it is missing, and smoke-tests that built app through `vite preview`. It verifies the strict-ASCII default, the logo/edge preset, real file upload, Fine Blocks, Braille, Structural Unicode, ASCII/Markdown/SVG output, exact clipboard/download contents, saved-preset v2 reload, a clean browser console, and 390-pixel mobile layout. The same test honors `BASE_PATH` for deployments under a subpath.
 
-`npm run release:check` adds a high-severity dependency audit, enforced global and browser-controller per-file coverage thresholds, production web and CLI builds, the complete Chromium workflow, compiled-CLI subprocess tests, and byte-for-byte regeneration of both legacy and new character-style goldens. It also creates the real npm tarball, derives and verifies the dynamic CLI-only JavaScript allowlist, installs that tarball into an empty consumer project, runs the packaged `asciiloom --help`, and confirms that the installed CLI reproduces every committed text, Markdown, and SVG example byte for byte. Pull-request CI installs Chromium's Linux system dependencies and runs this complete gate in addition to Node 20/22/24/26 checks, while macOS and Windows jobs exercise the compiled CLI safety suite. `npm run verify:examples` and `npm run verify:package` can also be run independently; the former rebuilds the CLI before comparing local outputs, while the latter expects `dist-cli` to have already been built.
+`npm run release:check` adds a high-severity dependency audit, enforced global and browser-controller per-file coverage thresholds, production web and CLI builds, the complete Chromium workflow, compiled-CLI subprocess tests, and byte-for-byte regeneration of both legacy and new character-style goldens. It also creates the real npm tarball, derives and verifies the dynamic CLI-only JavaScript allowlist, installs that tarball into an empty consumer project, runs the packaged `asciiloom --help`, and confirms that the installed CLI reproduces every committed text, Markdown, and SVG example byte for byte. Pull-request CI installs Chromium's Linux system dependencies and runs this complete gate in addition to Node 22/24/26 checks, while macOS and Windows jobs exercise the compiled CLI safety suite. `npm run verify:examples` and `npm run verify:package` can also be run independently; the former rebuilds the CLI before comparing local outputs, while the latter expects `dist-cli` to have already been built.
 
 `npm pack --dry-run --foreground-scripts` and `npm publish --dry-run --foreground-scripts` may be used as final package simulations. A publish dry run is verification only: it does not create a live npm release. Real publication remains a separate, explicitly authorized action.
 
@@ -396,7 +396,7 @@ Tests cover:
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` checks Node 20/22/24/26, including the compiled CLI on every supported major, the Chromium-backed complete release gate, and compiled CLI behavior on macOS and Windows for pushes and pull requests.
+`.github/workflows/ci.yml` checks Node 22/24/26, including the compiled CLI on every supported major, the Chromium-backed complete release gate, and compiled CLI behavior on macOS and Windows for pushes and pull requests.
 
 Workflow actions are pinned to reviewed immutable commits; `.github/dependabot.yml` checks weekly for action updates.
 
