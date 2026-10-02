@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Charosaic are recorded here.
+All notable changes to AsciiLoom are recorded here.
 
 ## [Unreleased]
 
@@ -12,6 +12,7 @@ All notable changes to Charosaic are recorded here.
 
 ### Changed
 
+- Project renamed from Charosaic to AsciiLoom: the npm package and CLI executable are now `asciiloom`, the repository moved to `aliyilmazco/asciiloom`, the Cloudflare Worker is named `asciiloom`, and browser presets are stored under `asciiloom.custom-presets.v1` (presets saved under the old `charosaic.custom-presets.v1` key are not carried over).
 - Cells are quantized in perceptual lightness (CIE L\*) instead of linear luminance, so midtones no longer collapse onto dark glyphs and output tracks the source image more closely. Rendered output differs from 1.0.0.
 - `readme`, `soft`, and `minimal` ramps reorder glyph pairs (`%#`, `+=`, `-:`) that were inverted in every measured font.
 

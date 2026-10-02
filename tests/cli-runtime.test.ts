@@ -33,7 +33,7 @@ function isSymlinkPermissionError(error: unknown): boolean {
 }
 
 async function temporaryDirectory(): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), 'charosaic-cli-runtime-'));
+  const directory = await mkdtemp(join(tmpdir(), 'asciiloom-cli-runtime-'));
   temporaryDirectories.push(directory);
   return directory;
 }
@@ -66,7 +66,7 @@ describe('runCli orchestration', () => {
 
     await runCli(['--help'], runtime);
 
-    expect(runtime.stdout).toHaveBeenCalledWith(expect.stringContaining('Charosaic CLI'));
+    expect(runtime.stdout).toHaveBeenCalledWith(expect.stringContaining('AsciiLoom CLI'));
     expect(runtime.stdout).toHaveBeenCalledWith(
       expect.stringContaining('--gamma <number>      Gamma correction (0.1-10)'),
     );

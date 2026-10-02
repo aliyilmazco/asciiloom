@@ -2,7 +2,7 @@
 
 ## Our standard
 
-We want Charosaic to be a welcoming, constructive project. Participants are expected to communicate with respect, assume good faith, explain technical disagreements clearly, and make room for people with different backgrounds and experience levels.
+We want AsciiLoom to be a welcoming, constructive project. Participants are expected to communicate with respect, assume good faith, explain technical disagreements clearly, and make room for people with different backgrounds and experience levels.
 
 ## Expected behavior
 
@@ -17,4 +17,4 @@ Harassment, discrimination, threats, personal attacks, doxxing, unwanted sexuali
 
 ## Enforcement
 
-For conduct concerns, use a private contact method published on the [`aliyilmazco` GitHub profile](https://github.com/aliyilmazco) rather than opening a public issue. Security concerns should follow [`SECURITY.md`](https://github.com/aliyilmazco/charosaic/blob/main/SECURITY.md). Maintainers may remove comments, restrict participation, or close contributions when necessary to keep the project safe and constructive.
+For conduct concerns, use a private contact method published on the [`aliyilmazco` GitHub profile](https://github.com/aliyilmazco) rather than opening a public issue. Security concerns should follow [`SECURITY.md`](https://github.com/aliyilmazco/asciiloom/blob/main/SECURITY.md). Maintainers may remove comments, restrict participation, or close contributions when necessary to keep the project safe and constructive.

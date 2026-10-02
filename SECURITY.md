@@ -10,7 +10,7 @@ Security fixes are developed against the current supported release line. Older v
 
 ## Reporting a vulnerability
 
-Please do not open a public GitHub issue for a suspected vulnerability. Submit the report through this repository's [private Security Advisory form](https://github.com/aliyilmazco/charosaic/security/advisories/new).
+Please do not open a public GitHub issue for a suspected vulnerability. Submit the report through this repository's [private Security Advisory form](https://github.com/aliyilmazco/asciiloom/security/advisories/new).
 
 If private reporting is unavailable, use a private contact method published on the [`aliyilmazco` GitHub profile](https://github.com/aliyilmazco) before disclosing details. Do not put vulnerability details in a public issue. Include the affected version, a clear reproduction, impact, and any suggested mitigation. Do not include real credentials or personal data in a report.
 

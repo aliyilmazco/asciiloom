@@ -11,7 +11,7 @@ import {
 
 function validManifest() {
   return {
-    name: 'charosaic',
+    name: 'asciiloom',
     version: '1.0.0',
     description:
       'README-focused image-to-ASCII CLI with text, Markdown, and accessible SVG output.',
@@ -19,7 +19,7 @@ function validManifest() {
     license: 'MIT',
     keywords: ['ascii-art', 'image-to-ascii', 'readme', 'markdown', 'svg', 'cli'],
     bin: {
-      charosaic: 'dist-cli/cli.js',
+      asciiloom: 'dist-cli/cli.js',
     },
     files: ['dist-cli/**/*.js'],
     publishConfig: {
@@ -67,7 +67,7 @@ describe('public npm package manifest validation', () => {
       'access',
       { publishConfig: { access: 'restricted', registry: 'https://registry.npmjs.org/' } },
     ],
-    ['bin', { bin: { charosaic: './src/cli.ts' } }],
+    ['bin', { bin: { asciiloom: './src/cli.ts' } }],
     ['files', { files: ['dist-cli'] }],
   ])('rejects an invalid %s contract', (_, override) => {
     expect(() => validatePackageManifest({ ...validManifest(), ...override })).toThrow();
@@ -223,7 +223,7 @@ describe('packed file validation', () => {
   ])('rejects leaked file %s', (leakedFile) => {
     const expectedFiles = buildExpectedPackageFileList(compiledFiles);
     const packResult = {
-      name: 'charosaic',
+      name: 'asciiloom',
       version: '1.0.0',
       files: [...expectedFiles, leakedFile].map((path) => ({ path })),
     };
@@ -236,7 +236,7 @@ describe('packed file validation', () => {
   it('rejects a missing compiled CLI module', () => {
     const expectedFiles = buildExpectedPackageFileList(compiledFiles);
     const packResult = {
-      name: 'charosaic',
+      name: 'asciiloom',
       version: '1.0.0',
       files: expectedFiles
         .filter((path) => path !== 'dist-cli/core/svg.js')
@@ -254,7 +254,7 @@ describe('packed file validation', () => {
   ])('rejects a mismatched packed %s', (_, override) => {
     const expectedFiles = buildExpectedPackageFileList(compiledFiles);
     const packResult = {
-      name: 'charosaic',
+      name: 'asciiloom',
       version: '1.0.0',
       files: expectedFiles.map((path) => ({ path })),
       ...override,
@@ -281,10 +281,10 @@ describe('nested npm environment', () => {
 
   it('resolves the installed npm shim for POSIX and Windows consumers', () => {
     expect(resolveInstalledExecutablePath('/consumer', 'linux')).toBe(
-      join('/consumer', 'node_modules', '.bin', 'charosaic'),
+      join('/consumer', 'node_modules', '.bin', 'asciiloom'),
     );
     expect(resolveInstalledExecutablePath('/consumer', 'win32')).toBe(
-      join('/consumer', 'node_modules', '.bin', 'charosaic.cmd'),
+      join('/consumer', 'node_modules', '.bin', 'asciiloom.cmd'),
     );
   });
 });

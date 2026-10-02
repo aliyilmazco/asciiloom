@@ -374,7 +374,7 @@ export function createDemoImage(): LoadedImage {
     source: canvas,
     width: canvas.width,
     height: canvas.height,
-    name: 'charosaic-demo',
+    name: 'asciiloom-demo',
     previewUrl,
     dispose: () => undefined,
   };

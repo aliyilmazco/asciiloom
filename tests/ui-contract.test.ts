@@ -165,12 +165,12 @@ describe('terminal workspace contract', () => {
       '<p>Browser-only image processing. No analytics, uploads, or remote image API.</p>',
     );
     expect(html).toContain('<nav class="footer-links" aria-label="Project links">');
-    expect(html).toContain('href="https://github.com/aliyilmazco/charosaic">Source</a>');
+    expect(html).toContain('href="https://github.com/aliyilmazco/asciiloom">Source</a>');
     expect(html).toContain(
-      'href="https://github.com/aliyilmazco/charosaic#readme">Documentation</a>',
+      'href="https://github.com/aliyilmazco/asciiloom#readme">Documentation</a>',
     );
     expect(html).toMatch(
-      /href="https:\/\/github\.com\/aliyilmazco\/charosaic\/blob\/main\/LICENSE"\s*>\s*MIT License<\/a\s*>/u,
+      /href="https:\/\/github\.com\/aliyilmazco\/asciiloom\/blob\/main\/LICENSE"\s*>\s*MIT License<\/a\s*>/u,
     );
     expect(css).toMatch(/\.footer-links a\s*\{[^}]*text-decoration:\s*underline;/su);
     expect(css).toMatch(/\.footer-links a:focus-visible\s*\{[^}]*outline:/su);

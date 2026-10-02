@@ -1,10 +1,10 @@
-# Charosaic
+# AsciiLoom
 
 A local-first image-to-ASCII generator built specifically for GitHub README files.
 
 It provides a polished browser interface and a scriptable CLI, both powered by the same strict TypeScript conversion core. The primary output is plain, copy-ready ASCII with no ANSI escape sequences. For stable typography and colors across GitHub themes, it can also export an accessible SVG.
 
-The source checkout contains project-owned/generated preview assets under `examples/`, including the legacy demo and golden outputs for Fine Blocks, Braille, and Structural Unicode. Their provenance and attribution are recorded in [`NOTICE.md`](https://github.com/aliyilmazco/charosaic/blob/main/NOTICE.md). Release verification regenerates every text, Markdown, and SVG result from source-controlled fixtures. These assets document the browser project but are intentionally excluded from the CLI-only npm package.
+The source checkout contains project-owned/generated preview assets under `examples/`, including the legacy demo and golden outputs for Fine Blocks, Braille, and Structural Unicode. Their provenance and attribution are recorded in [`NOTICE.md`](https://github.com/aliyilmazco/asciiloom/blob/main/NOTICE.md). Release verification regenerates every text, Markdown, and SVG result from source-controlled fixtures. These assets document the browser project but are intentionally excluded from the CLI-only npm package.
 
 ## Why this project exists
 
@@ -16,7 +16,7 @@ Most terminal-oriented ASCII packages optimize for ANSI colors, terminal geometr
 - Photos need perceptual luminance, local detail recovery, contrast normalization, and controlled dithering to survive heavy downsampling.
 - Plain Markdown follows the viewer's GitHub theme; an SVG option is useful when exact foreground/background rendering matters.
 
-Charosaic handles those concerns directly rather than adapting a terminal renderer after the fact.
+AsciiLoom handles those concerns directly rather than adapting a terminal renderer after the fact.
 
 ## Highlights
 
@@ -57,7 +57,7 @@ The static site is written to `dist/`.
 
 ### Deploy to Cloudflare Workers
 
-The repository's `wrangler.jsonc` publishes `dist/` as [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/). The configured Worker name is `ascii-art-for-md`; it must match the Worker connected to this repository in Cloudflare.
+The repository's `wrangler.jsonc` publishes `dist/` as [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/). The configured Worker name is `asciiloom`; it must match the Worker connected to this repository in Cloudflare.
 
 Use these [Workers Builds settings](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/):
 
@@ -82,20 +82,20 @@ To serve the build locally through Wrangler, run `npx wrangler@4.129.0 dev --loc
 
 ## Quick start: CLI
 
-The public npm package and installed executable are both named `charosaic`. The npm package distributes only the CLI; the browser studio remains available from this source repository and is not included in the package's runtime contents.
+The public npm package and installed executable are both named `asciiloom`. The npm package distributes only the CLI; the browser studio remains available from this source repository and is not included in the package's runtime contents.
 
 Install the CLI globally:
 
 ```bash
-npm install --global charosaic
-charosaic ./photo.jpg --preset readme --output ./ascii-photo.md
+npm install --global asciiloom
+asciiloom ./photo.jpg --preset readme --output ./ascii-photo.md
 ```
 
 Run it without a permanent global installation:
 
 ```bash
-npm exec --yes --package charosaic -- \
-  charosaic ./photo.jpg --preset readme --output ./ascii-photo.md
+npm exec --yes --package asciiloom -- \
+  asciiloom ./photo.jpg --preset readme --output ./ascii-photo.md
 ```
 
 For development, run directly from a source checkout:
@@ -114,7 +114,7 @@ node ./dist-cli/cli.js ./photo.jpg --preset portrait --output ./ascii-photo.md
 Generate text, Markdown, and SVG together:
 
 ```bash
-charosaic ./logo.png \
+asciiloom ./logo.png \
   --preset logo \
   --format all \
   --output ./docs/logo-ascii
@@ -131,7 +131,7 @@ docs/logo-ascii.svg
 Print every CLI option with:
 
 ```bash
-charosaic --help
+asciiloom --help
 ```
 
 Use `--format text`, `--format markdown`, or `--format svg` for one output type, or `--format all` to generate all three.
@@ -141,9 +141,9 @@ Use `--format text`, `--format markdown`, or `--format svg` for one output type,
 Character-style overlays can be combined with any preset:
 
 ```bash
-charosaic photo.jpg --preset portrait --style blocks-fine --output photo.md
-charosaic photo.jpg --preset portrait --style braille --output photo.md
-charosaic logo.png --preset logo --style structure --format all --output docs/logo
+asciiloom photo.jpg --preset portrait --style blocks-fine --output photo.md
+asciiloom photo.jpg --preset portrait --style braille --output photo.md
+asciiloom logo.png --preset logo --style structure --format all --output docs/logo
 ```
 
 CLI options are assembled in this order: preset defaults, then `--style`, then explicit flags. Braille rejects an explicit `--ramp` or `--edge-glyphs` because those options describe incompatible cell models. Structural Unicode accepts `--ramp`; the custom ramp becomes its tonal fallback where no structural stroke is emitted.
@@ -151,7 +151,7 @@ CLI options are assembled in this order: preset defaults, then `--style`, then e
 Detailed portrait:
 
 ```bash
-charosaic portrait.webp \
+asciiloom portrait.webp \
   --preset portrait \
   --width 104 \
   --dither atkinson \
@@ -162,7 +162,7 @@ charosaic portrait.webp \
 High-contrast logo with structural edge glyphs:
 
 ```bash
-charosaic mark.png \
+asciiloom mark.png \
   --preset logo \
   --edge-glyphs \
   --background '#ffffff' \
@@ -172,7 +172,7 @@ charosaic mark.png \
 Stable SVG for a README:
 
 ```bash
-charosaic hero.jpg \
+asciiloom hero.jpg \
   --preset ultra \
   --format svg \
   --output docs/hero-ascii.svg
@@ -210,7 +210,7 @@ The web interface can save the current conversion controls and Markdown-details 
 
 Preset data stays in the current browser profile unless you explicitly export the JSON file.
 
-Exported presets use schema v2. Stored or imported schema v1 presets are migrated in memory with `renderMode: tone` and `edgeStyle: ascii`; simply loading or applying one does not rewrite browser storage. Browser presets use the `charosaic.custom-presets.v1` storage namespace. The next successful preset mutation persists all entries as v2. Unknown future schema versions are rejected before any preset, selection, controls, or stored bytes can change.
+Exported presets use schema v2. Stored or imported schema v1 presets are migrated in memory with `renderMode: tone` and `edgeStyle: ascii`; simply loading or applying one does not rewrite browser storage. Browser presets use the `asciiloom.custom-presets.v1` storage namespace. The next successful preset mutation persists all entries as v2. Unknown future schema versions are rejected before any preset, selection, controls, or stored bytes can change.
 
 ## Output choices
 
@@ -305,7 +305,7 @@ silhouette    #
 The CLI accepts either a built-in name or a custom string:
 
 ```bash
-charosaic image.png --ramp '@#*:. ' --output custom.md
+asciiloom image.png --ramp '@#*:. ' --output custom.md
 ```
 
 Use at least two characters. A final space gives bright pixels a true blank value. Custom ramps belong to tone rendering and Structural Unicode fallback rendering; Braille packing does not use a ramp.
@@ -366,7 +366,7 @@ npm run release:check
 
 `npm run test:e2e` builds the production web app, installs the Playwright-managed Chromium build when it is missing, and smoke-tests that built app through `vite preview`. It verifies the strict-ASCII default, the logo/edge preset, real file upload, Fine Blocks, Braille, Structural Unicode, ASCII/Markdown/SVG output, exact clipboard/download contents, saved-preset v2 reload, a clean browser console, and 390-pixel mobile layout. The same test honors `BASE_PATH` for deployments under a subpath.
 
-`npm run release:check` adds a high-severity dependency audit, enforced global and browser-controller per-file coverage thresholds, production web and CLI builds, the complete Chromium workflow, compiled-CLI subprocess tests, and byte-for-byte regeneration of both legacy and new character-style goldens. It also creates the real npm tarball, derives and verifies the dynamic CLI-only JavaScript allowlist, installs that tarball into an empty consumer project, runs the packaged `charosaic --help`, and confirms that the installed CLI reproduces every committed text, Markdown, and SVG example byte for byte. Pull-request CI installs Chromium's Linux system dependencies and runs this complete gate in addition to Node 20/22/24/26 checks, while macOS and Windows jobs exercise the compiled CLI safety suite. `npm run verify:examples` and `npm run verify:package` can also be run independently; the former rebuilds the CLI before comparing local outputs, while the latter expects `dist-cli` to have already been built.
+`npm run release:check` adds a high-severity dependency audit, enforced global and browser-controller per-file coverage thresholds, production web and CLI builds, the complete Chromium workflow, compiled-CLI subprocess tests, and byte-for-byte regeneration of both legacy and new character-style goldens. It also creates the real npm tarball, derives and verifies the dynamic CLI-only JavaScript allowlist, installs that tarball into an empty consumer project, runs the packaged `asciiloom --help`, and confirms that the installed CLI reproduces every committed text, Markdown, and SVG example byte for byte. Pull-request CI installs Chromium's Linux system dependencies and runs this complete gate in addition to Node 20/22/24/26 checks, while macOS and Windows jobs exercise the compiled CLI safety suite. `npm run verify:examples` and `npm run verify:package` can also be run independently; the former rebuilds the CLI before comparing local outputs, while the latter expects `dist-cli` to have already been built.
 
 `npm pack --dry-run --foreground-scripts` and `npm publish --dry-run --foreground-scripts` may be used as final package simulations. A publish dry run is verification only: it does not create a live npm release. Real publication remains a separate, explicitly authorized action.
 
@@ -417,10 +417,10 @@ The web interface is deployed through Cloudflare Workers using the [settings abo
 
 ## Open-source project
 
-- Read [`CONTRIBUTING.md`](https://github.com/aliyilmazco/charosaic/blob/main/CONTRIBUTING.md) before opening a pull request.
-- Report security issues through the process in [`SECURITY.md`](https://github.com/aliyilmazco/charosaic/blob/main/SECURITY.md); do not disclose suspected vulnerabilities in public issues.
-- Participation expectations are documented in [`CODE_OF_CONDUCT.md`](https://github.com/aliyilmazco/charosaic/blob/main/CODE_OF_CONDUCT.md).
-- Release history is recorded in [`CHANGELOG.md`](https://github.com/aliyilmazco/charosaic/blob/main/CHANGELOG.md).
+- Read [`CONTRIBUTING.md`](https://github.com/aliyilmazco/asciiloom/blob/main/CONTRIBUTING.md) before opening a pull request.
+- Report security issues through the process in [`SECURITY.md`](https://github.com/aliyilmazco/asciiloom/blob/main/SECURITY.md); do not disclose suspected vulnerabilities in public issues.
+- Participation expectations are documented in [`CODE_OF_CONDUCT.md`](https://github.com/aliyilmazco/asciiloom/blob/main/CODE_OF_CONDUCT.md).
+- Release history is recorded in [`CHANGELOG.md`](https://github.com/aliyilmazco/asciiloom/blob/main/CHANGELOG.md).
 
 The npm package is intentionally CLI-only; the browser studio and repository documentation remain available from the source repository.
 

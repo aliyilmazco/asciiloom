@@ -1,17 +1,17 @@
 {
-  "name": "charosaic",
+  "name": "asciiloom",
   "version": "1.0.0",
   "description": "README-focused image-to-ASCII CLI with text, Markdown, and accessible SVG output.",
   "type": "module",
   "license": "MIT",
-  "author": "Charosaic contributors",
+  "author": "AsciiLoom contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aliyilmazco/charosaic.git"
+    "url": "https://github.com/aliyilmazco/asciiloom.git"
   },
-  "homepage": "https://aliyilmazco.github.io/charosaic/",
+  "homepage": "https://github.com/aliyilmazco/asciiloom#readme",
   "bugs": {
-    "url": "https://github.com/aliyilmazco/charosaic/issues"
+    "url": "https://github.com/aliyilmazco/asciiloom/issues"
   },
   "keywords": [
     "ascii-art",
@@ -22,7 +22,7 @@
     "cli"
   ],
   "bin": {
-    "charosaic": "dist-cli/cli.js"
+    "asciiloom": "dist-cli/cli.js"
   },
   "files": [
     "dist-cli/**/*.js"

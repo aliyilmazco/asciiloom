@@ -443,7 +443,7 @@ describe('demo image', () => {
     expect(demo).toMatchObject({
       width: 960,
       height: 600,
-      name: 'charosaic-demo',
+      name: 'asciiloom-demo',
       previewUrl: 'data:image/png;base64,demo',
     });
     expect(context.createLinearGradient).toHaveBeenCalledWith(0, 0, 960, 600);

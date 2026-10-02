@@ -1,7 +1,7 @@
 import type { AsciiOptions, DitherMode, RgbColor } from '../core/types.js';
 import { RAMPS } from '../core/presets.js';
 
-export const CUSTOM_PRESET_STORAGE_KEY = 'charosaic.custom-presets.v1';
+export const CUSTOM_PRESET_STORAGE_KEY = 'asciiloom.custom-presets.v1';
 export const CUSTOM_PRESET_SCHEMA_VERSION = 2;
 export const MAX_CUSTOM_PRESETS = 100;
 export const MAX_PRESET_IMPORT_BYTES = 1_048_576;

@@ -7,10 +7,10 @@ import type { RgbaImage } from '../core/types.js';
 import { resolveOutputDimensions, subcellGrid } from '../core/validation.js';
 
 export const CLI_HELP = `
-Charosaic CLI
+AsciiLoom CLI
 
 Usage:
-  charosaic <image> [options]
+  asciiloom <image> [options]
   npm run cli -- <image> [options]
 
 Options:
@@ -44,12 +44,12 @@ Options:
   -h, --help                Show this help
 
 Examples:
-  charosaic portrait.jpg --preset portrait --output portrait.md
-  charosaic logo.png --preset logo --format all --output docs/logo-ascii
-  charosaic diagram.png --style structure --format svg -o diagram.svg
-  charosaic photo.png --style shape --width 100 -o photo.md
-  charosaic photo.png --style braille --format text -o photo.txt
-  charosaic photo.webp --width 104 --dither atkinson --format svg -o art.svg
+  asciiloom portrait.jpg --preset portrait --output portrait.md
+  asciiloom logo.png --preset logo --format all --output docs/logo-ascii
+  asciiloom diagram.png --style structure --format svg -o diagram.svg
+  asciiloom photo.png --style shape --width 100 -o photo.md
+  asciiloom photo.png --style braille --format text -o photo.txt
+  asciiloom photo.webp --width 104 --dither atkinson --format svg -o art.svg
 `;
 
 export interface ImageMetadata {

@@ -2,7 +2,7 @@
 
 ## Project-owned assets
 
-The following repository assets are project-owned or generated for Charosaic and are distributed under the repository's MIT terms:
+The following repository assets are project-owned or generated for AsciiLoom and are distributed under the repository's MIT terms:
 
 - `examples/demo-source.png`, the project-owned/generated source image for the legacy demo.
 - Deterministic SVG fixtures under `tests/fixtures/character-styles/`.

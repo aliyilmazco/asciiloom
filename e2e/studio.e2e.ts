@@ -36,8 +36,8 @@ test('converts the demo and keeps the production interaction path working', asyn
   const browserErrors = collectBrowserErrors(page);
   await openReadyStudio(page);
 
-  await expect(page).toHaveTitle('Charosaic');
-  await expect(page.locator('#sourceMeta')).toHaveText('charosaic-demo · 960 × 600px');
+  await expect(page).toHaveTitle('AsciiLoom');
+  await expect(page.locator('#sourceMeta')).toHaveText('asciiloom-demo · 960 × 600px');
   await expect(page.locator('#resultMeta')).toHaveText(
     '88 columns × 28 rows · 10 glyph levels · atkinson',
   );
@@ -78,7 +78,7 @@ test('converts the demo and keeps the production interaction path working', asyn
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download .md', exact: true }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('charosaic-demo.md');
+  expect(download.suggestedFilename()).toBe('asciiloom-demo.md');
   expect(browserErrors).toEqual([]);
 });
 
@@ -198,7 +198,7 @@ test('uses every new style through upload, copy, download, and saved-preset work
   await expect(page.locator('#edgeGlyphs')).toBeChecked();
   const stored = await page.evaluate(
     (key) => localStorage.getItem(key),
-    'charosaic.custom-presets.v1',
+    'asciiloom.custom-presets.v1',
   );
   expect(stored).not.toBeNull();
   expect(JSON.parse(stored!)).toEqual([
