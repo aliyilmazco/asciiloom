@@ -24,6 +24,7 @@ All notable changes to AsciiLoom are recorded here.
 - Tone ramps quantize against each glyph's measured ink instead of its ramp position, so uneven or non-monotonic ramps (`classic`, `jp2a`, `bubbles`, `matrix`) render the same tones as the source.
 - `shape` diffuses tone error between cells, so smooth gradients render as texture instead of flat bands.
 - Wide Braille renders in the browser no longer fail the prepared-canvas pixel limit.
+- Text files, including the golden example outputs, are checked out with LF line endings on every platform via `.gitattributes`, so Windows checkouts match the CLI's byte-for-byte output.
 - Dependency audit: `sharp` 0.35.4 and `vitest` 4.1.11.
 
 ## [1.0.0] - 2026-08-25
