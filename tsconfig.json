@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "types": ["vite/client"],
+    "noEmit": true
+  },
+  "include": ["src/main.ts", "src/browser/**/*.ts", "src/core/**/*.ts", "src/vite-env.d.ts"],
+  "exclude": ["src/cli.ts", "src/cli-options.ts", "src/cli"]
+}

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-cli/
+coverage/
+playwright-report/
+test-results/
+.superpowers/
+docs/superpowers/
+.DS_Store
+*.log
