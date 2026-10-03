@@ -8,6 +8,7 @@ The following repository assets are project-owned or generated for AsciiLoom and
 - Deterministic SVG fixtures under `tests/fixtures/character-styles/`.
 - Generated text, Markdown, and SVG examples under `examples/`.
 - The project favicon at `public/favicon.svg`.
+- README screenshots and preview captures under `docs/images/`, taken from the AsciiLoom browser studio.
 
 The committed example outputs are generated artifacts used as compatibility fixtures. They are not included in the CLI-only npm package.
 

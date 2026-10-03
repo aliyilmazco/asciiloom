@@ -4,6 +4,10 @@ All notable changes to AsciiLoom are recorded here.
 
 ## [Unreleased]
 
+### Added
+
+- README screenshots of the browser studio and output-result gallery (`readme`, `shape`, `braille`, `structure`, CLI text, and SVG) under `docs/images/`.
+
 ## [1.0.0] - 2026-10-03
 
 First public release of AsciiLoom (developed under the working name Charosaic).

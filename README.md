@@ -4,9 +4,58 @@ A local-first image-to-ASCII generator built specifically for GitHub README file
 
 **Live app:** <https://asciiloom.aliyilmaz.co>
 
+![AsciiLoom studio converting the demo image into README-safe ASCII](https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/docs/images/studio-desktop.png)
+
 It provides a polished browser interface and a scriptable CLI, both powered by the same strict TypeScript conversion core. The primary output is plain, copy-ready ASCII with no ANSI escape sequences. For stable typography and colors across GitHub themes, it can also export an accessible SVG.
 
 The source checkout contains project-owned/generated preview assets under `examples/`, including the legacy demo and golden outputs for Fine Blocks, Braille, and Structural Unicode. Their provenance and attribution are recorded in [`NOTICE.md`](https://github.com/aliyilmazco/asciiloom/blob/main/NOTICE.md). Release verification regenerates every text, Markdown, and SVG result from source-controlled fixtures. These assets document the browser project but are intentionally excluded from the CLI-only npm package.
+
+## Screenshots
+
+| Character style picker                                                                                                                                                        | Mobile layout (390 px)                                                                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Character style dropdown listing the strict-ASCII and Unicode styles](https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/docs/images/studio-character-styles.png) | <img src="https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/docs/images/studio-mobile.png" alt="AsciiLoom studio on a 390-pixel mobile viewport" width="260"> |
+
+## Output results
+
+Every result below comes from the same 960 × 600 source image, [`examples/demo-source.png`](https://github.com/aliyilmazco/asciiloom/blob/main/examples/demo-source.png), rendered at 88 columns in the browser studio.
+
+<img src="https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/examples/demo-source.png" alt="Source image: dark mountains, a sun, and a curved line on a light gradient" width="480">
+
+| `readme` (strict ASCII, default)                                                                                         | `shape` (strict ASCII, closest likeness)                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| ![README safe style output](https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/docs/images/preview-readme.png) | ![Shape match style output](https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/docs/images/preview-shape.png)            |
+| **`braille` (Unicode 2×4 subcells)**                                                                                     | **`structure` (Unicode contour strokes)**                                                                                          |
+| ![Braille style output](https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/docs/images/preview-braille.png)    | ![Structural Unicode style output](https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/docs/images/preview-structure.png) |
+
+The CLI writes the same output as plain text. This is the unmodified result of `asciiloom examples/demo-source.png --style shape --width 64 --format text`:
+
+``````text
+                                                       ` `` `- `
+                                         `  -  -` --`--`--`--`--
+                                 `` -` -``- `-`____``-` -- -- --
+       __~aaaaaaa____        ``__`` -  -``` _g@@BB@@g_--`--`----
+      "`           `77"PPP^PP""`-- -``- -- _@@@@BB@@@@_---------
+                               `- `- --`- `q@@@BB@B@@@E---------
+                -``-         --- --`-- ----/@@BB@BB@BB" --------
+     -  -` -` --` -` ---`-----`-`--`------- `BB@B@@BP"--------~~
+ -`` -` -` -`````-- -- --`--`------------------7Z7`----~~-~~~-~~
+`  -- `-  g_ -` `- ----`---`------ `gg_--------- -~~-~-~-~~-~~~~
+-```- -- g@@_ ``__`--`------------gg@@Bg_-~--~---~~~~~~~~~~~~~~~
+ --``--_g@@B@_ggBB@g_-----------_g@@@BB@@g-~~~~~~~~-~~~~~~~~--gg
+--`---g@@@BBB@@@BBB@@p`--------g@@@BBBBB@@g_~~~~~~~~~~~~~~~~gg@@
+-`--_g@@BBBBBB@BBBBB@@g----~~_g@@@BBBBBBB@B@g_~~~~~~~~~~~~gg@@@B
+---g@@@BBBBBBBBBBBBBB@@g_~~-g@@@BBBBBBBBBBBB@@g~~~~=~~==g@@@@BBB
+-_g@@BBBBBBBBBBBBBBBBB@@@gg@@BBBBBBBBBBBBBBBB@@g_~~Z~_g@@@@BBBBB
+g@@@BBBBBBBBBBBBBBBBBBBB@@@@@BBBBBBBBBBBBBBBBB@B@g~_g@@@@BBBBBBB
+@@BBBBBBBBBBBBBBBBBBBBBBB@@BBBBBBBBBBBBBBBBBBBBB@@g@@B@BBBBBBBBB
+@BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+``````
+
+Exported SVG keeps fixed colors regardless of the viewer's GitHub theme ([`examples/demo.svg`](https://github.com/aliyilmazco/asciiloom/blob/main/examples/demo.svg), `readme` preset):
+
+![SVG export of the demo image](https://raw.githubusercontent.com/aliyilmazco/asciiloom/main/examples/demo.svg)
 
 ## Why this project exists
 
