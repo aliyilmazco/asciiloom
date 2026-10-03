@@ -2,18 +2,29 @@ name: CI
 
 on:
   push:
+    branches: [main]
+    tags: ['v*']
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
+    # Tagged commits were already verified on main; tags only trigger the macOS check.
+    if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22.x, 24.x, 26.x]
+        # Node 22.x is covered by the release job, which runs a superset of these checks.
+        node-version: [24.x, 26.x]
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -34,8 +45,9 @@ jobs:
         run: npm run build && npm run test:cli:built
 
   release:
+    if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
-    needs: verify
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -55,13 +67,11 @@ jobs:
       - name: Run complete release gate
         run: npm run release:check
 
-  cli-platform:
-    runs-on: ${{ matrix.os }}
-    needs: verify
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, windows-latest]
+  # macOS minutes cost ~10x Linux, so this single check runs only for version tags and manual dispatch.
+  cli-macos:
+    if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
+    runs-on: macos-latest
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

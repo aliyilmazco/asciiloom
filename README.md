@@ -459,9 +459,9 @@ Tests cover:
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` checks Node 22/24/26, including the compiled CLI on every supported major, the Chromium-backed complete release gate, and compiled CLI behavior on macOS and Windows for pushes and pull requests.
+`.github/workflows/ci.yml` runs on pull requests, pushes to `main`, `v*` tags, and manual dispatch. Pull requests and `main` pushes check Node 22/24/26, including the compiled CLI on every supported major, and the Chromium-backed complete release gate on Node 22. A single macOS job checks compiled CLI behavior only for `v*` tags and manual runs, because macOS runners bill at a much higher rate; Windows is not checked in CI. A newer push to the same branch or pull request cancels the in-progress run.
 
-Workflow actions are pinned to reviewed immutable commits; `.github/dependabot.yml` checks weekly for action updates.
+Workflow actions are pinned to reviewed immutable commits; `.github/dependabot.yml` checks weekly for action and npm updates and groups them into a few pull requests to limit CI runs.
 
 The web interface is deployed through Cloudflare Workers using the [settings above](#deploy-to-cloudflare-workers).
 

@@ -7,6 +7,10 @@ updates:
     labels:
       - dependencies
       - github-actions
+    groups:
+      github-actions:
+        patterns:
+          - '*'
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -19,3 +23,9 @@ updates:
         patterns:
           - vitest
           - '@vitest/*'
+      npm-minor-patch:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
